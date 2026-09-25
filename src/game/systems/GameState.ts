@@ -1,0 +1,404 @@
+// GameState.ts - Strongly typed centralized game state for CYBER CO
+
+export type GameSceneName = 'MainMenu' | 'Exterior' | 'Office';
+
+export type MissionStatus = 'not_started' | 'active' | 'investigating' | 'completed';
+
+export type SecurityDecision =
+  | 'REPORT'
+  | 'DELETE'
+  | 'REPLY'
+  | 'OPEN_LINK'
+  | 'ENFORCE_MFA_LOCKOUT'
+  | 'RESET_PASSWORD_ONLY'
+  | 'SMS_MFA_ONLY'
+  | 'IGNORE_INCIDENT';
+
+export interface GameSettings {
+  music: boolean;
+  sfx: boolean;
+  crtEffect: boolean;
+}
+
+export interface PlayerStats {
+  awareness: number; // 0 - 100
+  risk: number;      // 0 - 100
+  xp: number;
+}
+
+export interface CaseFile {
+  id: string;
+  title: string;
+  status: 'PENDING' | 'ACTIVE' | 'COMPLETED';
+  decision: SecurityDecision | null;
+  cluesFound: string[];
+  totalClues: number;
+  score: number;
+  consequenceText: string;
+  learningPoints: string[];
+}
+
+export interface GameSaveData {
+  version: number;
+  currentScene: GameSceneName;
+  playerCoords: { x: number; y: number };
+  stats: PlayerStats;
+  currentObjective: string;
+  missionStatus: MissionStatus;
+  activeMissionId: 'MISSION-001' | 'MISSION-002';
+  discoveredClues: string[];
+  investigationScore: number;
+  caseFile: CaseFile;
+  caseFiles: Record<string, CaseFile>;
+  completedMissions: string[];
+  settings: GameSettings;
+  timestamp: number;
+}
+
+const SAVE_STORAGE_KEY = 'CYBER_CO_SAVE_STATE_V1';
+
+const INITIAL_CASE_FILE_1: CaseFile = {
+  id: 'CASE #001',
+  title: 'The Suspicious Email',
+  status: 'PENDING',
+  decision: null,
+  cluesFound: [],
+  totalClues: 4,
+  score: 0,
+  consequenceText: '',
+  learningPoints: [
+    'Always verify the domain name after the @ symbol',
+    'Beware of artificial urgency and threats of account suspension',
+    'Inspect URL destinations before clicking any links',
+    'Report suspicious emails immediately to your security team'
+  ]
+};
+
+const INITIAL_CASE_FILE_2: CaseFile = {
+  id: 'CASE #002',
+  title: 'Credential Stuffing & MFA Bypass',
+  status: 'PENDING',
+  decision: null,
+  cluesFound: [],
+  totalClues: 4,
+  score: 0,
+  consequenceText: '',
+  learningPoints: [
+    'Never use predictable seasonal or dictionary passwords (e.g. Summer2024!)',
+    'Do not reuse corporate passwords across third-party personal services',
+    'Enforce phishing-resistant multi-factor authentication (App TOTP or FIDO2 keys)',
+    'Configure strict account lockout thresholds and IP rate-limiting against automated brute forcing'
+  ]
+};
+
+const DEFAULT_STATE: GameSaveData = {
+  version: 2,
+  currentScene: 'MainMenu',
+  playerCoords: { x: 380, y: 520 },
+  stats: {
+    awareness: 80,
+    risk: 20,
+    xp: 100
+  },
+  currentObjective: 'Enter the CYBER CO building',
+  missionStatus: 'not_started',
+  activeMissionId: 'MISSION-001',
+  discoveredClues: [],
+  investigationScore: 0,
+  caseFile: INITIAL_CASE_FILE_1,
+  caseFiles: {
+    'MISSION-001': INITIAL_CASE_FILE_1,
+    'MISSION-002': INITIAL_CASE_FILE_2
+  },
+  completedMissions: [],
+  settings: {
+    music: true,
+    sfx: true,
+    crtEffect: true
+  },
+  timestamp: Date.now()
+};
+
+export class GameStateManager {
+  private static instance: GameStateManager;
+  private state: GameSaveData;
+  private listeners: Set<(state: GameSaveData) => void> = new Set();
+
+  private constructor() {
+    this.state = this.loadFromStorage() || { ...DEFAULT_STATE };
+    // Ensure caseFiles mapping exists for legacy saves
+    if (!this.state.caseFiles) {
+      this.state.caseFiles = {
+        'MISSION-001': this.state.caseFile || INITIAL_CASE_FILE_1,
+        'MISSION-002': INITIAL_CASE_FILE_2
+      };
+    }
+  }
+
+  public static getInstance(): GameStateManager {
+    if (!GameStateManager.instance) {
+      GameStateManager.instance = new GameStateManager();
+    }
+    return GameStateManager.instance;
+  }
+
+  public getState(): GameSaveData {
+    return { ...this.state };
+  }
+
+  public hasSaveGame(): boolean {
+    try {
+      const raw = localStorage.getItem(SAVE_STORAGE_KEY);
+      return !!raw;
+    } catch {
+      return false;
+    }
+  }
+
+  public save(): void {
+    try {
+      this.state.timestamp = Date.now();
+      localStorage.setItem(SAVE_STORAGE_KEY, JSON.stringify(this.state));
+    } catch (e) {
+      console.warn('Could not save to localStorage', e);
+    }
+  }
+
+  public loadFromStorage(): GameSaveData | null {
+    try {
+      const raw = localStorage.getItem(SAVE_STORAGE_KEY);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed;
+    } catch {
+      return null;
+    }
+  }
+
+  public resetGame(): GameSaveData {
+    this.state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+    this.state.currentScene = 'Exterior';
+    this.state.playerCoords = { x: 380, y: 520 };
+    this.save();
+    this.notify();
+    return this.getState();
+  }
+
+  public continueGame(): GameSaveData {
+    const saved = this.loadFromStorage();
+    if (saved) {
+      this.state = saved;
+    } else {
+      this.state = { ...DEFAULT_STATE, currentScene: 'Exterior' };
+    }
+    this.notify();
+    return this.getState();
+  }
+
+  public updateState(partial: Partial<GameSaveData>): void {
+    this.state = {
+      ...this.state,
+      ...partial,
+      stats: partial.stats ? { ...this.state.stats, ...partial.stats } : this.state.stats,
+      caseFile: partial.caseFile ? { ...this.state.caseFile, ...partial.caseFile } : this.state.caseFile,
+      caseFiles: partial.caseFiles ? { ...this.state.caseFiles, ...partial.caseFiles } : this.state.caseFiles,
+      settings: partial.settings ? { ...this.state.settings, ...partial.settings } : this.state.settings
+    };
+    this.save();
+    this.notify();
+  }
+
+  public startMission2(): void {
+    this.updateState({
+      activeMissionId: 'MISSION-002',
+      missionStatus: 'active',
+      currentObjective: 'Investigate Credential Attack in IT room or on Workstation Security Console',
+      discoveredClues: [],
+      investigationScore: 0,
+      caseFile: {
+        ...this.state.caseFiles['MISSION-002'],
+        status: 'ACTIVE'
+      },
+      caseFiles: {
+        ...this.state.caseFiles,
+        'MISSION-002': {
+          ...this.state.caseFiles['MISSION-002'],
+          status: 'ACTIVE'
+        }
+      }
+    });
+  }
+
+  public addClue(clueId: string, scoreBonus: number): void {
+    if (!this.state.discoveredClues.includes(clueId)) {
+      const newClues = [...this.state.discoveredClues, clueId];
+      const newScore = this.state.investigationScore + scoreBonus;
+      const activeId = this.state.activeMissionId || 'MISSION-001';
+
+      const updatedCase: CaseFile = {
+        ...this.state.caseFile,
+        cluesFound: newClues,
+        score: newScore
+      };
+
+      this.updateState({
+        discoveredClues: newClues,
+        investigationScore: newScore,
+        caseFile: updatedCase,
+        caseFiles: {
+          ...this.state.caseFiles,
+          [activeId]: updatedCase
+        }
+      });
+    }
+  }
+
+  public applyDecision(decision: SecurityDecision): {
+    awarenessDelta: number;
+    riskDelta: number;
+    xpDelta: number;
+    feedbackTitle: string;
+    feedbackDescription: string;
+  } {
+    let awarenessDelta = 0;
+    let riskDelta = 0;
+    let xpDelta = 0;
+    let feedbackTitle = '';
+    let feedbackDescription = '';
+
+    const currentMissionId = this.state.activeMissionId || 'MISSION-001';
+
+    if (currentMissionId === 'MISSION-001') {
+      switch (decision) {
+        case 'REPORT':
+          awarenessDelta = +20;
+          riskDelta = -10;
+          xpDelta = +100;
+          feedbackTitle = 'EXCELLENT SECURITY DECISION';
+          feedbackDescription =
+            'You identified multiple warning signs and reported the email before interacting with it. ' +
+            'Security Operations has blocked the attacker domain network-wide, protecting the entire company!';
+          break;
+        case 'DELETE':
+          awarenessDelta = +10;
+          riskDelta = -5;
+          xpDelta = +50;
+          feedbackTitle = 'SAFE, BUT MISSED EVIDENCE';
+          feedbackDescription =
+            'Deleting the message prevented immediate infection, but because it was not reported, ' +
+            'other employees remain vulnerable to the same phishing wave.';
+          break;
+        case 'REPLY':
+          awarenessDelta = -5;
+          riskDelta = +15;
+          xpDelta = +0;
+          feedbackTitle = 'RISKY DECISION';
+          feedbackDescription =
+            'Replying to a suspicious sender confirms that your email address is active and monitored, ' +
+            'often inviting more targeted and sophisticated spear-phishing attacks.';
+          break;
+        case 'OPEN_LINK':
+          awarenessDelta = -10;
+          riskDelta = +30;
+          xpDelta = +0;
+          feedbackTitle = 'SECURITY THREAT COMPROMISE';
+          feedbackDescription =
+            'The link directed to a spoofed credential-harvesting site. ' +
+            'In a real attack, your corporate credentials would have been captured by the attacker.';
+          break;
+      }
+    } else {
+      // MISSION-002: Password Security & MFA
+      switch (decision) {
+        case 'ENFORCE_MFA_LOCKOUT':
+          awarenessDelta = +25;
+          riskDelta = -20;
+          xpDelta = +150;
+          feedbackTitle = 'EXCELLENT IDENTITY HARDENING';
+          feedbackDescription =
+            'You enforced phishing-resistant app/hardware MFA, invalidated all active attacker sessions, triggered a mandatory high-entropy password reset, and activated automatic 5-attempt account lockout. The credential stuffing botnet was completely neutralized!';
+          break;
+        case 'RESET_PASSWORD_ONLY':
+          awarenessDelta = +10;
+          riskDelta = +5;
+          xpDelta = +60;
+          feedbackTitle = 'PARTIAL MITIGATION (INCOMPLETE)';
+          feedbackDescription =
+            'Resetting the user password stopped the current session, but without enforcing MFA or rate limiting, the account remains vulnerable to dictionary attacks and credential reuse.';
+          break;
+        case 'SMS_MFA_ONLY':
+          awarenessDelta = +5;
+          riskDelta = +10;
+          xpDelta = +40;
+          feedbackTitle = 'SUBOPTIMAL MFA METHOD';
+          feedbackDescription =
+            'SMS-based verification is vulnerable to SIM-swap fraud, SS7 interception, and real-time reverse proxies. Company policy mandates app-based TOTP or FIDO2 keys.';
+          break;
+        case 'IGNORE_INCIDENT':
+          awarenessDelta = -15;
+          riskDelta = +35;
+          xpDelta = +0;
+          feedbackTitle = 'CRITICAL IDENTITY COMPROMISE';
+          feedbackDescription =
+            'Treating the alert as a false alarm allowed the threat actor to establish persistent access using the cracked password, leading to unauthorized data exfiltration from the finance department.';
+          break;
+      }
+    }
+
+    const newAwareness = Math.min(100, Math.max(0, this.state.stats.awareness + awarenessDelta));
+    const newRisk = Math.min(100, Math.max(0, this.state.stats.risk + riskDelta));
+    const newXP = this.state.stats.xp + xpDelta;
+
+    const completedList = Array.from(new Set([...this.state.completedMissions, currentMissionId]));
+
+    const updatedCase: CaseFile = {
+      ...this.state.caseFile,
+      status: 'COMPLETED',
+      decision,
+      consequenceText: feedbackDescription
+    };
+
+    const nextObjective =
+      currentMissionId === 'MISSION-001'
+        ? 'Mission 001 Complete! Speak to Marcus Vance or Devon Reed in the IT room.'
+        : 'Mission 002 Complete! System secured. Speak to Marcus Vance.';
+
+    this.updateState({
+      stats: {
+        awareness: newAwareness,
+        risk: newRisk,
+        xp: newXP
+      },
+      missionStatus: 'completed',
+      completedMissions: completedList,
+      currentObjective: nextObjective,
+      caseFile: updatedCase,
+      caseFiles: {
+        ...this.state.caseFiles,
+        [currentMissionId]: updatedCase
+      }
+    });
+
+    return {
+      awarenessDelta,
+      riskDelta,
+      xpDelta,
+      feedbackTitle,
+      feedbackDescription
+    };
+  }
+
+  public subscribe(listener: (state: GameSaveData) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notify(): void {
+    const s = this.getState();
+    for (const listener of this.listeners) {
+      listener(s);
+    }
+  }
+}
+
+export const gameState = GameStateManager.getInstance();

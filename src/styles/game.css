@@ -1,0 +1,229 @@
+/* CYBER CO - Retro Pixel Art & Cyberpunk Stylesheet */
+
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Press+Start+2P&display=swap');
+
+:root {
+  --bg-dark: #0a0e16;
+  --bg-panel: #111726;
+  --bg-panel-light: #1b2438;
+  --cyan-bright: #00d2e6;
+  --cyan-glow: rgba(0, 210, 230, 0.4);
+  --cyan-dark: #008899;
+  --neon-red: #ff3355;
+  --neon-green: #28e678;
+  --neon-amber: #f5aa28;
+  --border-cyber: #2a3a5a;
+  --text-white: #e8f4fc;
+  --text-muted: #7e94b2;
+
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-pixel: 'Press Start 2P', monospace;
+  --font-vt: 'VT323', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-dark);
+  color: var(--text-white);
+  font-family: var(--font-mono);
+  overflow: hidden;
+  image-rendering: pixelated;
+}
+
+/* CRT Scanlines Overlay */
+.crt-overlay::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 9999;
+  background-size: 100% 3px, 6px 100%;
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+.crt-overlay::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: radial-gradient(circle at center, transparent 60%, rgba(5, 8, 15, 0.6) 100%);
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* Cyber Box Panels */
+.cyber-panel {
+  background: var(--bg-panel);
+  border: 2px solid var(--cyan-dark);
+  box-shadow: 0 0 15px var(--cyan-glow), inset 0 0 10px rgba(0, 210, 230, 0.1);
+  position: relative;
+}
+
+.cyber-panel::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 12px;
+  width: 24px;
+  height: 4px;
+  background: var(--cyan-bright);
+}
+
+.cyber-panel::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  right: 12px;
+  width: 24px;
+  height: 4px;
+  background: var(--cyan-bright);
+}
+
+/* Cyber Buttons */
+.cyber-button {
+  background: #141c2e;
+  border: 1px solid var(--cyan-bright);
+  color: var(--cyan-bright);
+  font-family: var(--font-pixel);
+  font-size: 11px;
+  padding: 10px 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+  letter-spacing: 1px;
+  transition: all 0.15s ease;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cyber-button:hover:not(:disabled) {
+  background: var(--cyan-bright);
+  color: #0a0e16;
+  box-shadow: 0 0 12px var(--cyan-bright);
+  transform: translateY(-1px);
+}
+
+.cyber-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.cyber-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: #3b4d66;
+  color: #63768f;
+}
+
+.cyber-button-danger {
+  border-color: var(--neon-red);
+  color: var(--neon-red);
+}
+
+.cyber-button-danger:hover:not(:disabled) {
+  background: var(--neon-red);
+  color: #fff;
+  box-shadow: 0 0 12px var(--neon-red);
+}
+
+.cyber-button-success {
+  border-color: var(--neon-green);
+  color: var(--neon-green);
+}
+
+.cyber-button-success:hover:not(:disabled) {
+  background: var(--neon-green);
+  color: #0a0e16;
+  box-shadow: 0 0 12px var(--neon-green);
+}
+
+.cyber-button-amber {
+  border-color: var(--neon-amber);
+  color: var(--neon-amber);
+}
+
+.cyber-button-amber:hover:not(:disabled) {
+  background: var(--neon-amber);
+  color: #0a0e16;
+  box-shadow: 0 0 12px var(--neon-amber);
+}
+
+/* Progress Bars */
+.stat-bar-container {
+  height: 12px;
+  background: #090d14;
+  border: 1px solid #28374d;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.stat-bar-cyan {
+  background: linear-gradient(90deg, #008899, #00d2e6);
+  box-shadow: 0 0 8px #00d2e6;
+}
+
+.stat-bar-red {
+  background: linear-gradient(90deg, #991a2e, #ff3355);
+  box-shadow: 0 0 8px #ff3355;
+}
+
+.stat-bar-green {
+  background: linear-gradient(90deg, #15783f, #28e678);
+  box-shadow: 0 0 8px #28e678;
+}
+
+/* Blinking animations */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 0.9s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px var(--cyan-bright)); }
+  50% { filter: drop-shadow(0 0 8px var(--cyan-bright)); }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 1.8s infinite;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0d121c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #253347;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--cyan-dark);
+}
