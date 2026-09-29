@@ -17,9 +17,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   private isMovementLocked: boolean = false;
   private lastFacing: 'down' | 'left' | 'right' | 'up' = 'down';
   private footstepTimer: number = 0;
+  private shadow!: Phaser.GameObjects.Image;
 
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, 'player', 0);
+
+    // Contact drop shadow
+    this.shadow = scene.add.image(x, y + 20, 'shadow_contact');
+    this.shadow.setScale(0.65, 0.45);
+    this.shadow.setAlpha(0.6);
+    this.shadow.setDepth(y - 1);
 
     scene.add.existing(this);
     scene.physics.add.existing(this);
@@ -61,6 +68,10 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
   public update(time: number, delta: number) {
     // Dynamic depth sorting by Y position
     this.setDepth(this.y);
+    if (this.shadow) {
+      this.shadow.setPosition(this.x, this.y + 20);
+      this.shadow.setDepth(this.y - 1);
+    }
 
     if (this.isMovementLocked || !this.body) {
       return;

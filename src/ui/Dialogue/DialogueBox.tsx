@@ -98,9 +98,8 @@ export const DialogueBox: React.FC = () => {
               alt={dialogue.speaker.name}
               style={{
                 width: '64px',
-                height: '96px',
-                objectFit: 'cover',
-                objectPosition: 'top center',
+                height: '64px',
+                objectFit: 'contain',
                 imageRendering: 'pixelated'
               }}
             />

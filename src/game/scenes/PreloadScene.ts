@@ -20,6 +20,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('door_office', '/assets/environment/door_office.png');
     this.load.image('exterior_sidewalk', '/assets/environment/exterior_sidewalk.png');
     this.load.image('exterior_road', '/assets/environment/exterior_road.png');
+    this.load.image('exterior_road_line', '/assets/environment/exterior_road_line.png');
     this.load.image('exterior_grass', '/assets/environment/exterior_grass.png');
     this.load.image('exterior_wall', '/assets/environment/exterior_wall.png');
     this.load.image('exterior_sign', '/assets/environment/exterior_sign.png');
@@ -27,6 +28,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('exterior_tree', '/assets/environment/exterior_tree.png');
     this.load.image('building_entrance', '/assets/environment/building_entrance.png');
     this.load.image('cyber_cab', '/assets/environment/cyber_cab.png');
+    this.load.image('shadow_contact', '/assets/environment/shadow_contact.png');
 
     // Objects
     this.load.image('desk', '/assets/objects/desk.png');

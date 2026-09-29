@@ -136,294 +136,209 @@ const PALETTE = {
 // 1. ENVIRONMENT TILES (32x32)
 // ============================================================================
 
-// Warm Honey-Oak Parquet Floor for Main Office
+// Smooth Honey-Oak Parquet Floor for Main Office (Seamless, low-contrast)
 function generateFloorOffice() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.honeyOakMid);
 
-  // Parquet herringbone / basketweave pattern (two 16x16 alternating blocks)
-  // Block 1 (Top-Left: horizontal planks)
-  for (let y = 0; y < 16; y += 4) {
-    c.fillRect(0, y, 16, 1, ...PALETTE.honeyOakLight);
-    c.fillRect(0, y + 3, 16, 1, ...PALETTE.honeyOakDark);
-    // Subtle wood striae
-    c.setPixel(4, y + 1, ...PALETTE.honeyOakLight);
-    c.setPixel(10, y + 2, ...PALETTE.honeyOakShadow);
+  // Subtle horizontal plank seams (8px tall planks)
+  for (let y = 0; y < 32; y += 8) {
+    c.fillRect(0, y, 32, 1, ...PALETTE.honeyOakLight);
+    c.fillRect(0, y + 7, 32, 1, ...PALETTE.honeyOakDark);
+    // Staggered vertical plank ends
+    const staggerX = (y % 16 === 0) ? 14 : 26;
+    c.fillRect(staggerX, y, 1, 8, ...PALETTE.honeyOakDark);
   }
-  // Block 2 (Top-Right: vertical planks)
-  for (let x = 16; x < 32; x += 4) {
-    c.fillRect(x, 0, 1, 16, ...PALETTE.honeyOakLight);
-    c.fillRect(x + 3, 0, 1, 16, ...PALETTE.honeyOakDark);
-    c.setPixel(x + 1, 6, ...PALETTE.honeyOakLight);
-    c.setPixel(x + 2, 12, ...PALETTE.honeyOakShadow);
-  }
-  // Block 3 (Bottom-Left: vertical planks)
-  for (let x = 0; x < 16; x += 4) {
-    c.fillRect(x, 16, 1, 16, ...PALETTE.honeyOakLight);
-    c.fillRect(x + 3, 16, 1, 16, ...PALETTE.honeyOakDark);
-    c.setPixel(x + 1, 20, ...PALETTE.honeyOakLight);
-    c.setPixel(x + 2, 26, ...PALETTE.honeyOakShadow);
-  }
-  // Block 4 (Bottom-Right: horizontal planks)
-  for (let y = 16; y < 32; y += 4) {
-    c.fillRect(16, y, 16, 1, ...PALETTE.honeyOakLight);
-    c.fillRect(16, y + 3, 16, 1, ...PALETTE.honeyOakDark);
-    c.setPixel(22, y + 1, ...PALETTE.honeyOakLight);
-    c.setPixel(28, y + 2, ...PALETTE.honeyOakShadow);
-  }
-
-  // Soft division seams between parquet tiles
-  c.fillRect(0, 15, 32, 1, ...PALETTE.honeyOakShadow);
-  c.fillRect(15, 0, 1, 32, ...PALETTE.honeyOakShadow);
 
   saveAsset('environment/floor_office.png', c);
 }
 
-// Polished Ivory & Terracotta Checkered Marble (Reception / Lobby)
+// Polished Ivory Marble Floor (Reception / Lobby) (Clean, low-contrast luxury)
 function generateFloorMarble() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.marbleCreamMid);
 
-  // Outer frame
+  // Very subtle 1px mortar border
   c.strokeRect(0, 0, 32, 32, ...PALETTE.marbleCreamDark);
-  // Diagonal glossy shine reflection
-  for (let i = 0; i < 28; i++) {
-    c.setPixel(2 + i, 2 + i, ...PALETTE.marbleCreamLight);
-    if (i < 27) c.setPixel(3 + i, 2 + i, ...PALETTE.white);
-  }
-  // Brass corner accent studs
-  c.fillRect(1, 1, 2, 2, ...PALETTE.brassMid);
-  c.fillRect(29, 1, 2, 2, ...PALETTE.brassMid);
-  c.fillRect(1, 29, 2, 2, ...PALETTE.brassMid);
-  c.fillRect(29, 29, 2, 2, ...PALETTE.brassMid);
+  // Extremely subtle warm specular sheen in center
+  c.fillRect(8, 8, 16, 16, ...PALETTE.marbleCreamLight);
 
   saveAsset('environment/floor_marble.png', c);
 }
 
-// Executive Geometric Scandinavian Rug (Manager's Office)
+// Executive Woven Carpet (Manager's Office) (Clean, non-repetitive, no polka-dots)
 function generateFloorCarpet() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.rugNavy);
 
-  // Woven texture
+  // Subtle microscopic woven texture with minimal contrast
   for (let y = 0; y < 32; y += 2) {
     for (let x = (y % 4 === 0 ? 0 : 2); x < 32; x += 4) {
-      c.setPixel(x, y, ...PALETTE.rugTeal);
+      c.setPixel(x, y, 32, 46, 76, 255);
     }
   }
-
-  // Geometric diamond / gold accent in center
-  c.fillRect(14, 4, 4, 4, ...PALETTE.rugGoldTrim);
-  c.fillRect(4, 14, 4, 4, ...PALETTE.rugGoldTrim);
-  c.fillRect(24, 14, 4, 4, ...PALETTE.rugGoldTrim);
-  c.fillRect(14, 24, 4, 4, ...PALETTE.rugGoldTrim);
-
-  // Border trim
-  c.strokeRect(0, 0, 32, 32, ...PALETTE.rugTeal);
-  c.strokeRect(1, 1, 30, 30, ...PALETTE.rugGoldTrim);
 
   saveAsset('environment/floor_carpet.png', c);
 }
 
-// High-Tech Fiber-Optic Datacenter Floor (IT / Server Room)
+// High-Tech Raised Access Datacenter Floor (IT Room) (Clean, zero noisy grid lines)
 function generateFloorDark() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.obsidian);
+
+  // Subtle raised floor panel bevel
   c.strokeRect(0, 0, 32, 32, ...PALETTE.slateDark);
-
-  // Perforated airflow cooling vents in center
-  for (let y = 6; y < 26; y += 3) {
-    for (let x = 6; x < 26; x += 3) {
-      c.setPixel(x, y, ...PALETTE.black);
-    }
-  }
-
-  // Glowing amber and cyan fiber conduit track across tile
-  c.fillRect(15, 0, 2, 32, ...PALETTE.neonAmber);
-  c.fillRect(16, 0, 1, 32, ...PALETTE.sunGlare);
-  c.fillRect(0, 15, 32, 2, ...PALETTE.cyberCyan);
-  c.fillRect(0, 15, 32, 1, ...PALETTE.cyberCyanLight);
+  c.fillRect(1, 1, 30, 1, ...PALETTE.slateMid);
+  // 4 corner screw dimples
+  c.setPixel(2, 2, ...PALETTE.darkEspresso);
+  c.setPixel(29, 2, ...PALETTE.darkEspresso);
+  c.setPixel(2, 29, ...PALETTE.darkEspresso);
+  c.setPixel(29, 29, ...PALETTE.darkEspresso);
 
   saveAsset('environment/floor_dark.png', c);
 }
 
-// Architectural Contemporary Greige Wall with Warm Walnut Trim
+// Architectural Contemporary Wall with Walnut Baseboard
 function generateWallOffice() {
   const c = new PixelCanvas(32, 32);
-  // Main architectural wall surface
   c.fillRect(0, 0, 32, 32, ...PALETTE.wallCream);
 
-  // Subtle vertical panel seams
-  c.fillRect(0, 0, 32, 4, ...PALETTE.wallShadow);
+  // Top ceiling moulding
+  c.fillRect(0, 0, 32, 3, ...PALETTE.wallShadow);
   c.fillRect(0, 0, 32, 1, ...PALETTE.white);
 
-  // Brushed brass accent conduit strip
-  c.fillRect(0, 18, 32, 2, ...PALETTE.brassMid);
-  c.fillRect(0, 18, 32, 1, ...PALETTE.brassLight);
-
-  // Rich walnut wood baseboard
-  c.fillRect(0, 26, 32, 6, ...PALETTE.mahoganyMid);
-  c.fillRect(0, 26, 32, 1, ...PALETTE.mahoganyLight);
+  // Rich walnut wood baseboard at bottom
+  c.fillRect(0, 24, 32, 8, ...PALETTE.mahoganyMid);
+  c.fillRect(0, 24, 32, 1, ...PALETTE.mahoganyLight);
   c.fillRect(0, 31, 32, 1, ...PALETTE.mahoganyDark);
 
   saveAsset('environment/wall_office.png', c);
 }
 
-// Panoramic Floor-to-Ceiling Window showing Golden Hour Twilight City!
+// Architectural Glass Window Panel (Smooth sunset reflection, NO miniature cities!)
 function generateWallWindow() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.wallCream);
 
-  // Window frame (Dark bronze architectural frame)
-  c.fillRect(1, 2, 30, 25, ...PALETTE.darkEspresso);
-  c.fillRect(2, 3, 28, 23, ...PALETTE.black);
+  // Dark architectural window frame
+  c.fillRect(1, 2, 30, 22, ...PALETTE.darkEspresso);
 
-  // Glowing Golden Hour Sunset Sky inside window
-  // Gradient from purple at top to glowing gold at horizon
-  c.fillRect(3, 4, 26, 5, ...PALETTE.twilightPurple);
-  c.fillRect(3, 9, 26, 5, ...PALETTE.sunsetMagenta);
-  c.fillRect(3, 14, 26, 5, ...PALETTE.sunsetCoral);
-  c.fillRect(3, 19, 26, 6, ...PALETTE.sunsetOrange);
+  // Smooth glass pane with warm golden-hour sky gradient
+  c.fillRect(3, 4, 26, 6, ...PALETTE.twilightPurple);
+  c.fillRect(3, 10, 26, 6, ...PALETTE.sunsetMagenta);
+  c.fillRect(3, 16, 26, 6, ...PALETTE.sunsetOrange);
 
-  // Glowing City Skyline Silhouettes
-  // Distant skyscraper 1 (left)
-  c.fillRect(4, 11, 7, 14, ...PALETTE.obsidian);
-  c.setPixel(6, 13, ...PALETTE.sunsetGold);
-  c.setPixel(8, 15, ...PALETTE.sunsetWarmYellow);
-  c.setPixel(6, 17, ...PALETTE.sunsetGold);
-  c.setPixel(8, 19, ...PALETTE.white);
+  // Vertical bronze mullion divider
+  c.fillRect(15, 3, 2, 20, ...PALETTE.brassDark);
 
-  // Tower 2 (center with red spire beacon)
-  c.fillRect(13, 8, 8, 17, ...PALETTE.darkEspresso);
-  c.setPixel(16, 7, ...PALETTE.neonCoral); // Red blinking aircraft beacon
-  for (let r = 10; r < 23; r += 2) {
-    c.setPixel(15, r, ...PALETTE.sunsetWarmYellow);
-    c.setPixel(18, r, ...PALETTE.sunsetGold);
-  }
-
-  // Tower 3 (right)
-  c.fillRect(23, 13, 6, 12, ...PALETTE.obsidian);
-  c.setPixel(25, 15, ...PALETTE.cyberCyan);
-  c.setPixel(26, 18, ...PALETTE.sunsetWarmYellow);
-
-  // Warm diagonal sun reflection glint across glass pane
-  for (let i = 0; i < 16; i++) {
-    c.setPixel(4 + i, 5 + i, ...PALETTE.glassSunsetHighlight);
+  // Diagonal reflection gleam across the glass
+  for (let i = 0; i < 18; i++) {
+    c.setPixel(4 + i, 5 + Math.floor(i * 0.8), ...PALETTE.glassSunsetHighlight);
   }
 
   // Baseboard
-  c.fillRect(0, 27, 32, 5, ...PALETTE.mahoganyMid);
-  c.fillRect(0, 27, 32, 1, ...PALETTE.mahoganyLight);
+  c.fillRect(0, 24, 32, 8, ...PALETTE.mahoganyMid);
+  c.fillRect(0, 24, 32, 1, ...PALETTE.mahoganyLight);
 
   saveAsset('environment/wall_window.png', c);
 }
 
-// Contemporary Glass Entrance Doors with Warm Interior Glow
+// Contemporary Glass Entrance Doors
 function generateDoorOffice() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.wallCream);
 
-  // Frame
+  // Bronze door frame
   c.fillRect(1, 2, 30, 30, ...PALETTE.darkEspresso);
   c.strokeRect(1, 2, 30, 30, ...PALETTE.brassMid);
 
-  // Dual glass panels with warm golden glow from inside
+  // Glass panels with warm golden glow
   c.fillRect(3, 4, 12, 26, ...PALETTE.sunsetWarmYellow);
   c.fillRect(17, 4, 12, 26, ...PALETTE.sunsetWarmYellow);
 
-  // Frosted corporate motif horizontal stripes
-  c.fillRect(4, 14, 10, 4, ...PALETTE.white);
-  c.fillRect(18, 14, 10, 4, ...PALETTE.white);
-
-  // Polished brass vertical bar handles
-  c.fillRect(13, 12, 2, 10, ...PALETTE.brassLight);
-  c.fillRect(17, 12, 2, 10, ...PALETTE.brassLight);
-
-  // Electronic keycard access scanner
-  c.fillRect(14, 23, 4, 3, ...PALETTE.obsidian);
-  c.fillRect(15, 24, 2, 1, ...PALETTE.neonGreen);
+  // Polished brass handles
+  c.fillRect(13, 14, 2, 8, ...PALETTE.brassLight);
+  c.fillRect(17, 14, 2, 8, ...PALETTE.brassLight);
 
   saveAsset('environment/door_office.png', c);
 }
 
-// Warm Terracotta / Slate Interlocking Sidewalk with Golden Autumn Leaves
+// Warm Interlocking Stone Sidewalk (Clean, low-contrast, non-repetitive)
 function generateExteriorSidewalk() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.streetPaveMid);
-  c.strokeRect(0, 0, 32, 32, ...PALETTE.streetPaveLight);
 
-  // Interlocking warm pavers
-  c.fillRect(1, 1, 14, 14, ...PALETTE.streetPaveLight);
-  c.fillRect(17, 17, 14, 14, ...PALETTE.streetPaveLight);
-
-  // Scattered golden ginkgo / autumn leaves on sidewalk
-  c.fillRect(5, 7, 2, 2, ...PALETTE.ginkgoGold);
-  c.setPixel(7, 6, ...PALETTE.ginkgoAmber);
-  c.fillRect(22, 12, 2, 2, ...PALETTE.sunsetCoral);
-  c.fillRect(10, 24, 2, 2, ...PALETTE.ginkgoGold);
-  c.setPixel(12, 25, ...PALETTE.ginkgoAmber);
-  c.fillRect(25, 27, 2, 2, ...PALETTE.ginkgoOrange);
+  // Subtle clean 1px paver seams
+  c.strokeRect(0, 0, 32, 32, ...PALETTE.streetPaveDark);
+  c.fillRect(1, 1, 30, 1, ...PALETTE.streetPaveLight);
 
   saveAsset('environment/exterior_sidewalk.png', c);
 }
 
-// Asphalt Road with Warm Amber Centerline
+// Plain Asphalt Road Tile (No lines! Clean dark asphalt)
 function generateExteriorRoad() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.roadAsphalt);
-
-  // Textured aggregate specks
-  c.setPixel(4, 6, ...PALETTE.slateDark);
-  c.setPixel(18, 9, ...PALETTE.slateDark);
-  c.setPixel(28, 22, ...PALETTE.slateDark);
-
-  // Warm golden dashed lane strip
-  c.fillRect(0, 14, 32, 4, ...PALETTE.black);
-  c.fillRect(4, 15, 24, 2, ...PALETTE.roadMarkingAmber);
-  c.fillRect(4, 15, 24, 1, ...PALETTE.sunGlare);
-
   saveAsset('environment/exterior_road.png', c);
 }
 
-// Vibrant Park Grass with Wildflowers
+// Dedicated Centerline Road Tile (ONLY placed on the middle row!)
+function generateExteriorRoadLine() {
+  const c = new PixelCanvas(32, 32);
+  c.fillRect(0, 0, 32, 32, ...PALETTE.roadAsphalt);
+
+  // Single clean golden dashed road stripe
+  c.fillRect(4, 14, 24, 4, ...PALETTE.roadMarkingAmber);
+  c.fillRect(4, 15, 24, 2, ...PALETTE.sunGlare);
+
+  saveAsset('environment/exterior_road_line.png', c);
+}
+
+// Park Grass Tile with Subtle Tufts
 function generateExteriorGrass() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.leafDark);
 
-  // Lush sunlit grass blades
-  for (let y = 2; y < 30; y += 5) {
-    for (let x = 2; x < 30; x += 6) {
-      c.fillRect(x, y + 2, 1, 3, ...PALETTE.leafMid);
-      c.fillRect(x + 1, y, 1, 5, ...PALETTE.leafLight);
-      c.fillRect(x + 2, y + 1, 1, 4, ...PALETTE.leafHighlight);
+  // Natural subtle grass texture
+  for (let y = 3; y < 30; y += 8) {
+    for (let x = 3; x < 30; x += 8) {
+      c.fillRect(x, y, 1, 3, ...PALETTE.leafMid);
+      c.fillRect(x + 1, y - 1, 1, 4, ...PALETTE.leafLight);
     }
   }
-
-  // Scattered colorful wildflowers (Goldenrod & Lavender)
-  c.setPixel(8, 8, ...PALETTE.sunsetGold);
-  c.setPixel(9, 7, ...PALETTE.sunsetWarmYellow);
-  c.setPixel(22, 14, ...PALETTE.electricPurple);
-  c.setPixel(15, 25, ...PALETTE.hotPink);
-  c.setPixel(26, 22, ...PALETTE.sunsetGold);
 
   saveAsset('environment/exterior_grass.png', c);
 }
 
-// Modern Headquarters Bronze Architectural Facade
+// Modern Corporate Building Granite & Bronze Facade (Clean, non-repetitive)
 function generateExteriorWall() {
   const c = new PixelCanvas(32, 32);
   c.fillRect(0, 0, 32, 32, ...PALETTE.darkEspresso);
 
-  // Architectural panels in brushed bronze and warm sandstone
-  c.strokeRect(1, 2, 30, 28, ...PALETTE.brassDark);
-  c.fillRect(2, 3, 28, 26, ...PALETTE.terracottaDark);
-
-  // Vertical bronze mullions with warm LED uplighting
-  c.fillRect(4, 3, 2, 26, ...PALETTE.brassMid);
-  c.fillRect(26, 3, 2, 26, ...PALETTE.brassMid);
-  c.fillRect(5, 3, 1, 26, ...PALETTE.brassLight);
+  // Smooth architectural bronze panels
+  c.strokeRect(0, 0, 32, 32, ...PALETTE.brassDark);
+  c.fillRect(1, 1, 30, 30, ...PALETTE.obsidian);
+  c.fillRect(1, 1, 30, 1, 48, 54, 70, 255); // Top edge bevel
 
   saveAsset('environment/exterior_wall.png', c);
+}
+
+// Soft Semi-Transparent Contact Drop Shadow for Characters & Objects
+function generateContactShadow() {
+  const c = new PixelCanvas(48, 24);
+  // Transparent background, draw smooth elliptical gradient shadow
+  for (let y = 0; y < 24; y++) {
+    for (let x = 0; x < 48; x++) {
+      const dx = (x - 24) / 22;
+      const dy = (y - 12) / 10;
+      const dist = dx * dx + dy * dy;
+      if (dist <= 1.0) {
+        const alpha = Math.floor((1.0 - dist) * 90); // max alpha ~90 out of 255
+        c.setPixel(x, y, 0, 0, 0, alpha);
+      }
+    }
+  }
+  saveAsset('environment/shadow_contact.png', c);
 }
 
 // Grand Headquarters Entrance with Warm Golden Spilling Light
@@ -1180,6 +1095,7 @@ function run() {
   // Exterior
   generateExteriorSidewalk();
   generateExteriorRoad();
+  generateExteriorRoadLine();
   generateExteriorGrass();
   generateExteriorWall();
   generateBuildingEntrance();
@@ -1187,6 +1103,7 @@ function run() {
   generateExteriorStreetLamp();
   generateExteriorTree();
   generateCyberCab();
+  generateContactShadow();
 
   // Office Furniture & Props
   generateDesk();
@@ -1206,7 +1123,488 @@ function run() {
   // Character Spritesheets
   generateAllCharacters();
 
+  // Portraits (64x64 Dialogue Busts)
+  generatePortraits();
+
   console.log('--- All Master Assets Generated Successfully! ---');
+}
+
+// ============================================================================
+// 7. DIALOGUE PORTRAITS (64x64 Dedicated Character Busts)
+// ============================================================================
+
+function generateManagerPortrait() {
+  const c = new PixelCanvas(64, 64);
+  // Executive backdrop with sunset ambient light from top-right
+  for (let y = 0; y < 64; y++) {
+    for (let x = 0; x < 64; x++) {
+      const t = (x + (64 - y)) / 128;
+      const r = Math.round(18 + t * 45);
+      const g = Math.round(22 + t * 20);
+      const b = Math.round(38 + t * 15);
+      c.setPixel(x, y, r, g, b, 255);
+    }
+  }
+  // Subtle vertical executive blinds / window lines in background
+  for (let y = 0; y < 64; y++) {
+    c.setPixel(14, y, 16, 18, 30, 255);
+    c.setPixel(26, y, 16, 18, 30, 255);
+    c.setPixel(50, y, 28, 22, 36, 255);
+  }
+  c.strokeRect(0, 0, 64, 64, 34, 42, 64, 255);
+
+  // --- SHOULDERS & SUIT ---
+  c.fillRect(10, 44, 44, 20, ...PALETTE.clothExecutiveNavy);
+  c.fillRect(12, 42, 40, 2, ...PALETTE.clothExecutiveNavy);
+  c.fillRect(16, 40, 32, 2, ...PALETTE.clothExecutiveNavy);
+  c.fillRect(10, 48, 6, 16, 16, 26, 48, 255);
+  c.fillRect(48, 48, 6, 16, 16, 26, 48, 255);
+  c.fillRect(18, 44, 4, 18, 44, 68, 110, 255);
+  c.fillRect(42, 44, 4, 18, 44, 68, 110, 255);
+
+  // White dress shirt collar
+  c.fillRect(24, 38, 16, 12, ...PALETTE.clothWhite);
+  c.fillRect(26, 36, 12, 2, ...PALETTE.clothWhite);
+  c.fillRect(23, 40, 3, 6, 210, 220, 235, 255);
+  c.fillRect(38, 40, 3, 6, 210, 220, 235, 255);
+
+  // Crimson silk tie
+  c.fillRect(29, 41, 6, 5, ...PALETTE.clothCrimson);
+  c.fillRect(29, 41, 6, 1, 140, 24, 38, 255);
+  c.fillRect(28, 46, 8, 18, ...PALETTE.clothCrimson);
+  c.fillRect(28, 46, 2, 18, 160, 28, 44, 255);
+  c.fillRect(34, 46, 2, 18, 225, 58, 78, 255);
+
+  // Golden tie clip
+  c.fillRect(27, 52, 10, 2, ...PALETTE.sunsetGold);
+  c.setPixel(31, 52, ...PALETTE.sunGlare);
+  c.fillRect(27, 53, 10, 1, ...PALETTE.honeyOakShadow);
+
+  // Pocket square on chest
+  c.fillRect(14, 52, 5, 2, ...PALETTE.clothWhite);
+  c.setPixel(16, 51, ...PALETTE.clothWhite);
+
+  // --- NECK & JAW ---
+  c.fillRect(26, 31, 12, 10, ...PALETTE.skinMid);
+  c.fillRect(26, 31, 12, 4, ...PALETTE.skinMidShadow);
+  c.fillRect(24, 31, 16, 5, ...PALETTE.skinMid);
+  c.fillRect(26, 35, 12, 3, ...PALETTE.skinMid);
+  c.fillRect(28, 37, 8, 2, ...PALETTE.skinMid);
+
+  // Stubble
+  for (let sy = 33; sy <= 37; sy++) {
+    for (let sx = 26; sx <= 37; sx += 2) {
+      if ((sx + sy) % 2 === 0) {
+        c.setPixel(sx, sy, 175, 130, 100, 255);
+      }
+    }
+  }
+
+  // --- FACE ---
+  c.fillRect(20, 16, 24, 16, ...PALETTE.skinMid);
+  c.fillRect(18, 21, 2, 8, ...PALETTE.skinMidShadow);
+  c.fillRect(44, 21, 2, 8, ...PALETTE.skinLight);
+  c.fillRect(42, 18, 2, 14, ...PALETTE.skinLight);
+  c.fillRect(43, 20, 1, 10, ...PALETTE.sunGlare);
+
+  // Mouth
+  c.fillRect(28, 33, 8, 2, 150, 92, 78, 255);
+  c.setPixel(28, 34, 130, 75, 65, 255);
+  c.setPixel(35, 34, 130, 75, 65, 255);
+
+  // Nose
+  c.fillRect(31, 22, 2, 9, ...PALETTE.skinLight);
+  c.fillRect(33, 27, 2, 4, ...PALETTE.skinMidShadow);
+  c.fillRect(30, 30, 4, 1, 170, 118, 88, 255);
+
+  // Eyebrows
+  c.fillRect(22, 20, 7, 2, 110, 42, 22, 255);
+  c.fillRect(35, 20, 7, 2, 110, 42, 22, 255);
+  c.setPixel(21, 21, 110, 42, 22, 255);
+  c.setPixel(42, 21, 110, 42, 22, 255);
+
+  // Eyes
+  c.fillRect(23, 23, 5, 3, ...PALETTE.white);
+  c.fillRect(25, 23, 2, 3, 72, 118, 168, 255);
+  c.fillRect(26, 23, 1, 2, 20, 30, 45, 255);
+  c.setPixel(25, 23, ...PALETTE.white);
+  c.fillRect(22, 22, 7, 1, 40, 24, 18, 255);
+
+  c.fillRect(36, 23, 5, 3, ...PALETTE.white);
+  c.fillRect(37, 23, 2, 3, 72, 118, 168, 255);
+  c.fillRect(38, 23, 1, 2, 20, 30, 45, 255);
+  c.setPixel(37, 23, ...PALETTE.white);
+  c.fillRect(35, 22, 7, 1, 40, 24, 18, 255);
+
+  // --- HAIR ---
+  c.fillRect(19, 10, 26, 7, ...PALETTE.hairAuburn);
+  c.fillRect(21, 7, 22, 4, ...PALETTE.hairAuburn);
+  c.fillRect(24, 5, 16, 3, ...PALETTE.hairAuburn);
+  c.fillRect(17, 13, 4, 9, ...PALETTE.hairAuburn);
+  c.fillRect(43, 13, 4, 9, ...PALETTE.hairAuburn);
+
+  c.fillRect(19, 12, 4, 6, 105, 38, 20, 255);
+  c.fillRect(23, 15, 6, 2, 105, 38, 20, 255);
+  c.fillRect(26, 8, 14, 3, 218, 105, 52, 255);
+  c.fillRect(28, 6, 10, 2, ...PALETTE.sunsetGold);
+  c.fillRect(38, 10, 6, 5, ...PALETTE.sunsetGold);
+
+  c.setPixel(18, 20, 180, 185, 198, 255);
+  c.setPixel(19, 21, 180, 185, 198, 255);
+  c.setPixel(18, 22, 180, 185, 198, 255);
+  c.setPixel(44, 20, 220, 215, 228, 255);
+  c.setPixel(45, 21, 220, 215, 228, 255);
+
+  saveAsset('portraits/manager.png', c);
+}
+
+function generateReceptionistPortrait() {
+  const c = new PixelCanvas(64, 64);
+  // Twilight plum background
+  for (let y = 0; y < 64; y++) {
+    for (let x = 0; x < 64; x++) {
+      const t = (x + y) / 128;
+      const r = Math.round(36 + t * 40);
+      const g = Math.round(20 + t * 15);
+      const b = Math.round(40 + t * 25);
+      c.setPixel(x, y, r, g, b, 255);
+    }
+  }
+  const drawBokeh = (cx, cy, radius, r, g, b, a) => {
+    for (let dy = -radius; dy <= radius; dy++) {
+      for (let dx = -radius; dx <= radius; dx++) {
+        if (dx * dx + dy * dy <= radius * radius) {
+          c.setPixel(cx + dx, cy + dy, r, g, b, a);
+        }
+      }
+    }
+  };
+  drawBokeh(12, 16, 7, 65, 32, 68, 255);
+  drawBokeh(52, 12, 9, 78, 38, 72, 255);
+  drawBokeh(50, 36, 6, 72, 34, 64, 255);
+  c.strokeRect(0, 0, 64, 64, 68, 38, 72, 255);
+
+  // Ponytail sweeping down
+  c.fillRect(9, 16, 8, 32, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(8, 22, 6, 24, 186, 140, 52, 255);
+  c.fillRect(11, 20, 4, 26, ...PALETTE.sunsetWarmYellow);
+  c.fillRect(10, 44, 5, 8, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(14, 14, 6, 5, ...PALETTE.terracottaLight);
+  c.fillRect(15, 15, 4, 3, ...PALETTE.terracottaDark);
+
+  // Shoulders & Coral Blouse
+  c.fillRect(14, 44, 36, 20, ...PALETTE.terracottaLight);
+  c.fillRect(16, 42, 32, 2, ...PALETTE.terracottaLight);
+  c.fillRect(19, 40, 26, 2, ...PALETTE.terracottaLight);
+  c.fillRect(14, 48, 6, 16, ...PALETTE.terracottaMid);
+  c.fillRect(44, 48, 6, 16, ...PALETTE.terracottaMid);
+  c.fillRect(22, 46, 2, 18, ...PALETTE.terracottaDark);
+  c.fillRect(40, 46, 2, 18, ...PALETTE.terracottaDark);
+
+  // Collar & Neck
+  c.fillRect(27, 40, 10, 6, ...PALETTE.skinLight);
+  c.fillRect(29, 46, 6, 4, ...PALETTE.skinLight);
+  c.fillRect(31, 50, 2, 2, ...PALETTE.skinLightShadow);
+
+  // Gold pendant necklace
+  c.fillRect(29, 43, 6, 1, ...PALETTE.sunsetGold);
+  c.fillRect(30, 44, 4, 1, ...PALETTE.sunsetGold);
+  c.setPixel(31, 48, ...PALETTE.sunsetGold);
+  c.setPixel(32, 48, ...PALETTE.sunGlare);
+
+  // Neck & Jaw
+  c.fillRect(27, 31, 10, 10, ...PALETTE.skinLight);
+  c.fillRect(27, 31, 10, 3, ...PALETTE.skinLightShadow);
+  c.fillRect(24, 30, 16, 4, ...PALETTE.skinLight);
+  c.fillRect(26, 34, 12, 3, ...PALETTE.skinLight);
+  c.fillRect(28, 36, 8, 2, ...PALETTE.skinLight);
+
+  // Face
+  c.fillRect(21, 16, 22, 15, ...PALETTE.skinLight);
+  c.fillRect(22, 27, 4, 3, 255, 185, 178, 255);
+  c.fillRect(38, 27, 4, 3, 255, 185, 178, 255);
+
+  // Smile
+  c.fillRect(28, 33, 8, 2, 225, 110, 124, 255);
+  c.setPixel(27, 32, 210, 95, 110, 255);
+  c.setPixel(36, 32, 210, 95, 110, 255);
+  c.fillRect(30, 33, 4, 1, ...PALETTE.white);
+
+  // Nose
+  c.setPixel(31, 29, 230, 170, 140, 255);
+  c.setPixel(32, 29, 230, 170, 140, 255);
+  c.setPixel(31, 30, 215, 150, 125, 255);
+
+  // Eyebrows
+  c.fillRect(23, 20, 6, 1, 190, 145, 60, 255);
+  c.fillRect(35, 20, 6, 1, 190, 145, 60, 255);
+  c.setPixel(28, 21, 190, 145, 60, 255);
+  c.setPixel(35, 21, 190, 145, 60, 255);
+
+  // Eyes
+  c.fillRect(23, 23, 5, 3, ...PALETTE.white);
+  c.fillRect(25, 23, 2, 3, 68, 164, 112, 255);
+  c.fillRect(26, 23, 1, 2, 20, 45, 30, 255);
+  c.setPixel(25, 23, ...PALETTE.white);
+  c.fillRect(22, 22, 6, 1, 60, 36, 28, 255);
+
+  c.fillRect(36, 23, 5, 3, ...PALETTE.white);
+  c.fillRect(37, 23, 2, 3, 68, 164, 112, 255);
+  c.fillRect(38, 23, 1, 2, 20, 45, 30, 255);
+  c.setPixel(37, 23, ...PALETTE.white);
+  c.fillRect(36, 22, 6, 1, 60, 36, 28, 255);
+
+  // Hair
+  c.fillRect(18, 8, 28, 8, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(21, 5, 22, 4, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(18, 14, 4, 12, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(42, 14, 4, 12, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(22, 15, 12, 4, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(33, 15, 8, 2, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(24, 18, 8, 2, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(24, 6, 16, 2, ...PALETTE.sunsetWarmYellow);
+  c.fillRect(22, 10, 18, 2, ...PALETTE.sunsetWarmYellow);
+  c.fillRect(23, 16, 8, 1, ...PALETTE.sunGlare);
+
+  // Headset & mic
+  c.fillRect(27, 5, 16, 1, ...PALETTE.obsidian);
+  c.fillRect(42, 6, 2, 14, ...PALETTE.obsidian);
+  c.fillRect(43, 20, 3, 6, ...PALETTE.obsidian);
+  c.fillRect(44, 21, 2, 4, ...PALETTE.slateMid);
+  c.fillRect(42, 27, 2, 3, ...PALETTE.sunsetGold);
+  c.setPixel(43, 28, ...PALETTE.sunGlare);
+  c.fillRect(42, 26, 2, 2, ...PALETTE.obsidian);
+  c.fillRect(39, 29, 3, 2, ...PALETTE.obsidian);
+  c.fillRect(36, 32, 3, 2, ...PALETTE.obsidian);
+  c.fillRect(33, 34, 3, 2, ...PALETTE.obsidian);
+  c.setPixel(32, 34, ...PALETTE.cyberCyan);
+  c.setPixel(32, 35, ...PALETTE.cyberCyanLight);
+
+  saveAsset('portraits/receptionist.png', c);
+}
+
+function generateITTechPortrait() {
+  const c = new PixelCanvas(64, 64);
+  c.fillRect(0, 0, 64, 64, 16, 20, 30, 255);
+  c.fillRect(4, 4, 10, 56, 24, 30, 44, 255);
+  c.fillRect(50, 4, 10, 56, 24, 30, 44, 255);
+
+  const drawLed = (x, y, color) => {
+    c.fillRect(x, y, 2, 1, ...color);
+  };
+  drawLed(7, 10, PALETTE.cyberCyan);
+  drawLed(7, 18, PALETTE.neonGreen);
+  drawLed(7, 26, PALETTE.neonAmber);
+  drawLed(7, 34, PALETTE.cyberCyan);
+  drawLed(10, 14, PALETTE.neonGreen);
+  drawLed(10, 22, PALETTE.neonGreen);
+  drawLed(53, 10, PALETTE.neonGreen);
+  drawLed(53, 18, PALETTE.cyberCyan);
+  drawLed(53, 28, PALETTE.neonAmber);
+  drawLed(56, 14, PALETTE.cyberCyan);
+  drawLed(56, 24, PALETTE.neonGreen);
+  c.strokeRect(0, 0, 64, 64, 30, 40, 60, 255);
+
+  // Shoulders & Mustard Polo
+  c.fillRect(10, 44, 44, 20, ...PALETTE.clothMustard);
+  c.fillRect(12, 42, 40, 2, ...PALETTE.clothMustard);
+  c.fillRect(16, 40, 32, 2, ...PALETTE.clothMustard);
+  c.fillRect(10, 48, 6, 16, 162, 110, 18, 255);
+  c.fillRect(48, 48, 6, 16, 162, 110, 18, 255);
+
+  c.fillRect(22, 38, 20, 5, ...PALETTE.darkEspresso);
+  c.fillRect(20, 41, 5, 6, ...PALETTE.darkEspresso);
+  c.fillRect(39, 41, 5, 6, ...PALETTE.darkEspresso);
+  c.fillRect(30, 43, 4, 12, ...PALETTE.darkEspresso);
+  c.setPixel(31, 46, ...PALETTE.clothWhite);
+  c.setPixel(31, 51, ...PALETTE.clothWhite);
+
+  // Lanyard & Badge
+  c.fillRect(26, 40, 2, 16, 18, 18, 24, 255);
+  c.fillRect(36, 40, 2, 16, 18, 18, 24, 255);
+  c.fillRect(29, 54, 6, 2, ...PALETTE.slateHighlight);
+  c.fillRect(28, 56, 8, 8, ...PALETTE.obsidian);
+  c.fillRect(29, 57, 6, 3, ...PALETTE.cyberCyan);
+  c.fillRect(30, 61, 4, 2, ...PALETTE.clothWhite);
+
+  // Neck & Jaw
+  c.fillRect(26, 31, 12, 10, ...PALETTE.skinDark);
+  c.fillRect(26, 31, 12, 4, ...PALETTE.skinDarkShadow);
+  c.fillRect(23, 30, 18, 5, ...PALETTE.skinDark);
+  c.fillRect(25, 34, 14, 3, ...PALETTE.skinDark);
+  c.fillRect(27, 36, 10, 2, ...PALETTE.skinDark);
+
+  // Beard
+  c.fillRect(24, 33, 3, 4, ...PALETTE.hairJetBlack);
+  c.fillRect(37, 33, 3, 4, ...PALETTE.hairJetBlack);
+  c.fillRect(26, 35, 12, 3, ...PALETTE.hairJetBlack);
+  c.fillRect(28, 37, 8, 2, ...PALETTE.hairJetBlack);
+  c.fillRect(29, 34, 6, 1, ...PALETTE.hairJetBlack);
+
+  // Face
+  c.fillRect(20, 17, 24, 14, ...PALETTE.skinDark);
+  c.fillRect(18, 22, 2, 7, ...PALETTE.skinDarkShadow);
+  c.fillRect(44, 22, 2, 7, ...PALETTE.skinDark);
+  c.fillRect(44, 23, 2, 3, ...PALETTE.obsidian);
+  c.setPixel(45, 24, ...PALETTE.neonGreen);
+
+  // Nose
+  c.fillRect(30, 25, 4, 5, ...PALETTE.skinDarkShadow);
+  c.fillRect(31, 26, 2, 4, ...PALETTE.skinDark);
+  c.fillRect(29, 29, 6, 1, 118, 75, 52, 255);
+
+  // Mouth
+  c.fillRect(29, 32, 6, 1, 110, 65, 48, 255);
+  c.setPixel(35, 31, 110, 65, 48, 255);
+
+  // Glasses & Eyes
+  c.strokeRect(21, 21, 9, 6, ...PALETTE.obsidian);
+  c.strokeRect(34, 21, 9, 6, ...PALETTE.obsidian);
+  c.fillRect(30, 22, 4, 1, ...PALETTE.obsidian);
+
+  c.fillRect(23, 23, 5, 2, ...PALETTE.white);
+  c.fillRect(25, 23, 2, 2, ...PALETTE.hairJetBlack);
+  c.setPixel(24, 23, ...PALETTE.white);
+
+  c.fillRect(36, 23, 5, 2, ...PALETTE.white);
+  c.fillRect(37, 23, 2, 2, ...PALETTE.hairJetBlack);
+  c.setPixel(36, 23, ...PALETTE.white);
+
+  // Monitor Glint Reflection
+  c.setPixel(22, 24, 140, 235, 255, 220);
+  c.setPixel(23, 25, 140, 235, 255, 220);
+  c.setPixel(24, 26, 140, 235, 255, 220);
+  c.setPixel(35, 24, 140, 235, 255, 220);
+  c.setPixel(36, 25, 140, 235, 255, 220);
+  c.setPixel(37, 26, 140, 235, 255, 220);
+
+  // Hair
+  c.fillRect(20, 8, 24, 10, ...PALETTE.hairJetBlack);
+  c.fillRect(22, 6, 20, 3, ...PALETTE.hairJetBlack);
+  c.fillRect(22, 16, 20, 2, ...PALETTE.hairJetBlack);
+  c.fillRect(19, 13, 2, 5, ...PALETTE.slateDark);
+  c.fillRect(43, 13, 2, 5, ...PALETTE.slateDark);
+
+  for (let hy = 7; hy <= 14; hy += 2) {
+    for (let hx = 22; hx <= 40; hx += 3) {
+      c.setPixel(hx, hy, ...PALETTE.slateMid);
+    }
+  }
+
+  saveAsset('portraits/it_tech.png', c);
+}
+
+function generatePlayerPortrait() {
+  const c = new PixelCanvas(64, 64);
+  for (let y = 0; y < 64; y++) {
+    for (let x = 0; x < 64; x++) {
+      const t = (x + y) / 128;
+      const r = Math.round(18 + t * 20);
+      const g = Math.round(24 + t * 30);
+      const b = Math.round(40 + t * 45);
+      c.setPixel(x, y, r, g, b, 255);
+    }
+  }
+  for (let i = 0; i < 64; i += 16) {
+    c.fillRect(0, i, 64, 1, 28, 48, 72, 255);
+    c.fillRect(i, 0, 1, 64, 28, 48, 72, 255);
+  }
+  c.strokeRect(0, 0, 64, 64, 36, 72, 108, 255);
+
+  // Shoulders & Teal Hoodie
+  c.fillRect(10, 44, 44, 20, ...PALETTE.clothTeal);
+  c.fillRect(12, 42, 40, 2, ...PALETTE.clothTeal);
+  c.fillRect(16, 40, 32, 2, ...PALETTE.clothTeal);
+  c.fillRect(14, 44, 4, 18, 36, 178, 196, 255);
+  c.fillRect(46, 44, 4, 18, 36, 178, 196, 255);
+  c.fillRect(10, 48, 4, 16, 10, 74, 84, 255);
+  c.fillRect(50, 48, 4, 16, 10, 74, 84, 255);
+
+  // Undershirt & Collar
+  c.fillRect(26, 38, 12, 8, ...PALETTE.clothWhite);
+  c.fillRect(21, 39, 6, 8, ...PALETTE.clothTeal);
+  c.fillRect(37, 39, 6, 8, ...PALETTE.clothTeal);
+
+  // Drawstrings
+  c.fillRect(25, 46, 1, 9, ...PALETTE.clothWhite);
+  c.fillRect(38, 46, 1, 9, ...PALETTE.clothWhite);
+
+  // Badge
+  c.fillRect(28, 42, 2, 14, ...PALETTE.cyberCyan);
+  c.fillRect(34, 42, 2, 14, ...PALETTE.cyberCyan);
+  c.fillRect(28, 54, 8, 10, ...PALETTE.sunsetGold);
+  c.fillRect(29, 55, 6, 4, ...PALETTE.clothCharcoal);
+  c.fillRect(30, 60, 4, 2, ...PALETTE.cyberCyanLight);
+
+  // Neck & Jaw
+  c.fillRect(26, 31, 12, 10, ...PALETTE.skinLight);
+  c.fillRect(26, 31, 12, 3, ...PALETTE.skinLightShadow);
+  c.fillRect(23, 30, 18, 5, ...PALETTE.skinLight);
+  c.fillRect(25, 34, 14, 3, ...PALETTE.skinLight);
+  c.fillRect(27, 36, 10, 2, ...PALETTE.skinLight);
+
+  // Face
+  c.fillRect(20, 16, 24, 15, ...PALETTE.skinLight);
+  c.fillRect(18, 21, 2, 7, ...PALETTE.skinLightShadow);
+  c.fillRect(44, 21, 2, 7, ...PALETTE.skinLight);
+  c.fillRect(18, 23, 2, 3, ...PALETTE.cyberCyan);
+  c.setPixel(17, 24, ...PALETTE.cyberCyanLight);
+
+  // Nose
+  c.fillRect(31, 24, 2, 6, ...PALETTE.skinLight);
+  c.setPixel(32, 29, 218, 160, 130, 255);
+  c.setPixel(31, 30, 195, 140, 110, 255);
+
+  // Mouth
+  c.fillRect(28, 33, 8, 1, 185, 110, 95, 255);
+  c.setPixel(35, 32, 185, 110, 95, 255);
+
+  // Eyebrows
+  c.fillRect(22, 20, 7, 2, ...PALETTE.hairDarkBrown);
+  c.fillRect(35, 20, 7, 2, ...PALETTE.hairDarkBrown);
+  c.setPixel(21, 21, ...PALETTE.hairDarkBrown);
+  c.setPixel(42, 21, ...PALETTE.hairDarkBrown);
+
+  // Eyes
+  c.fillRect(23, 23, 5, 3, ...PALETTE.white);
+  c.fillRect(25, 23, 2, 3, ...PALETTE.hairDarkBrown);
+  c.fillRect(26, 23, 1, 2, 15, 10, 8, 255);
+  c.setPixel(25, 23, ...PALETTE.white);
+  c.fillRect(22, 22, 6, 1, 35, 22, 16, 255);
+
+  c.fillRect(36, 23, 5, 3, ...PALETTE.white);
+  c.fillRect(37, 23, 2, 3, ...PALETTE.hairDarkBrown);
+  c.fillRect(38, 23, 1, 2, 15, 10, 8, 255);
+  c.setPixel(37, 23, ...PALETTE.white);
+  c.fillRect(36, 22, 6, 1, 35, 22, 16, 255);
+
+  // Hair
+  c.fillRect(19, 9, 26, 8, ...PALETTE.hairDarkBrown);
+  c.fillRect(21, 6, 22, 4, ...PALETTE.hairDarkBrown);
+  c.fillRect(17, 13, 4, 10, ...PALETTE.hairDarkBrown);
+  c.fillRect(43, 13, 4, 10, ...PALETTE.hairDarkBrown);
+
+  c.fillRect(21, 15, 8, 4, ...PALETTE.hairDarkBrown);
+  c.fillRect(28, 14, 10, 5, ...PALETTE.hairDarkBrown);
+  c.fillRect(36, 15, 7, 4, ...PALETTE.hairDarkBrown);
+  c.fillRect(24, 18, 5, 2, ...PALETTE.hairDarkBrown);
+  c.fillRect(32, 18, 4, 2, ...PALETTE.hairDarkBrown);
+
+  c.fillRect(24, 7, 16, 2, ...PALETTE.honeyOakMid);
+  c.fillRect(26, 9, 12, 2, ...PALETTE.honeyOakLight);
+  c.setPixel(22, 8, ...PALETTE.honeyOakLight);
+  c.setPixel(39, 8, ...PALETTE.honeyOakLight);
+  c.setPixel(29, 15, ...PALETTE.honeyOakMid);
+  c.setPixel(34, 16, ...PALETTE.honeyOakMid);
+
+  saveAsset('portraits/player.png', c);
+}
+
+function generatePortraits() {
+  generateManagerPortrait();
+  generateReceptionistPortrait();
+  generateITTechPortrait();
+  generatePlayerPortrait();
 }
 
 run();

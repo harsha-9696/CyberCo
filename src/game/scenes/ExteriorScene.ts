@@ -103,11 +103,12 @@ export class ExteriorScene extends Phaser.Scene {
     });
 
     // Building Wall Facade (Y: 100 to 280)
+    // Architecturally designed: Solid bronze panels with two grand 2-story glass window bays
     for (let x = 0; x < 1280; x += 32) {
       for (let y = 100; y < 280; y += 32) {
-        // Windows scattered on facade
-        const isWindow = (x % 96 === 32 || x % 96 === 64) && y < 220;
-        const tileKey = isWindow ? 'wall_window' : 'exterior_wall';
+        // Grand window bays on left and right wings
+        const isWindowBay = ((x >= 224 && x <= 416) || (x >= 864 && x <= 1056)) && y < 240;
+        const tileKey = isWindowBay ? 'wall_window' : 'exterior_wall';
         const tile = this.add.image(x + 16, y + 16, tileKey);
         tile.setDepth(-5);
       }
@@ -155,10 +156,11 @@ export class ExteriorScene extends Phaser.Scene {
       }
     }
 
-    // Asphalt Road (Y: 520 to 720)
+    // Asphalt Road (Y: 520 to 720) — ONE SINGLE CLEAN GOLDEN CENTERLINE at Y = 608!
     for (let x = 0; x < 1280; x += 32) {
       for (let y = 520; y < 720; y += 32) {
-        const tile = this.add.image(x + 16, y + 16, 'exterior_road');
+        const tileKey = (y === 608) ? 'exterior_road_line' : 'exterior_road';
+        const tile = this.add.image(x + 16, y + 16, tileKey);
         tile.setDepth(-8);
       }
     }
@@ -168,19 +170,30 @@ export class ExteriorScene extends Phaser.Scene {
     this.physics.add.existing(roadCurb, true);
     this.obstacles.add(roadCurb);
 
-    // Parked Futuristic Cyber-Cab at curb
+    // Parked Futuristic Cyber-Cab at curb with Contact Drop Shadow
+    const cabShadow = this.add.image(860, 574, 'shadow_contact');
+    cabShadow.setScale(1.4, 0.8);
+    cabShadow.setAlpha(0.7);
+    cabShadow.setDepth(559);
+
     const cab = this.add.image(860, 560, 'cyber_cab');
     cab.setDepth(560);
     const cabCollision = this.add.rectangle(860, 564, 60, 20, 0x000000, 0);
     this.physics.add.existing(cabCollision, true);
     this.obstacles.add(cabCollision);
 
-    // Street Lamps with Warm Amber Glow Halos
+    // Street Lamps with Warm Amber Glow Halos and Contact Shadows
     const lampPositions = [
       { x: 340, y: 350 },
       { x: 940, y: 350 }
     ];
     lampPositions.forEach((pos) => {
+      // Base shadow
+      const lampShadow = this.add.image(pos.x, pos.y + 28, 'shadow_contact');
+      lampShadow.setScale(0.6, 0.4);
+      lampShadow.setAlpha(0.6);
+      lampShadow.setDepth(pos.y - 1);
+
       const lamp = this.add.image(pos.x, pos.y, 'exterior_lamp');
       lamp.setDepth(pos.y);
       const base = this.add.rectangle(pos.x, pos.y + 26, 12, 10, 0x000000, 0);
@@ -200,7 +213,7 @@ export class ExteriorScene extends Phaser.Scene {
       });
     });
 
-    // Golden Autumn / Ginkgo Trees along sidewalk
+    // Golden Autumn / Ginkgo Trees along sidewalk with Contact Shadows
     const treePositions = [
       { x: 230, y: 380 },
       { x: 450, y: 320 },
@@ -208,6 +221,12 @@ export class ExteriorScene extends Phaser.Scene {
       { x: 1050, y: 380 }
     ];
     treePositions.forEach((pos) => {
+      // Tree shadow
+      const treeShadow = this.add.image(pos.x, pos.y + 20, 'shadow_contact');
+      treeShadow.setScale(0.8, 0.5);
+      treeShadow.setAlpha(0.65);
+      treeShadow.setDepth(pos.y - 1);
+
       const tree = this.add.image(pos.x, pos.y, 'exterior_tree');
       tree.setDepth(pos.y);
       const base = this.add.rectangle(pos.x, pos.y + 16, 16, 12, 0x000000, 0);
@@ -261,10 +280,10 @@ export class ExteriorScene extends Phaser.Scene {
     this.player = new Player(this, spawnX, spawnY);
     this.physics.add.collider(this.player, this.obstacles);
 
-    // Camera follow with smooth pixel-perfect clamping
+    // 🌟 Camera: 2.2x Zoom with smooth cinematic lerp tracking!
     this.cameras.main.setBounds(0, 0, 1280, 720);
-    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
-    this.cameras.main.setZoom(1.0);
+    this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+    this.cameras.main.setZoom(2.2);
 
     // Keyboard 'E' for interaction
     if (this.input.keyboard) {

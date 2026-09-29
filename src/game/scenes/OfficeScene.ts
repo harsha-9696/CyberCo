@@ -41,22 +41,28 @@ export class OfficeScene extends Phaser.Scene {
     this.interactables = [];
     this.currentInteractable = null;
 
-    // 1. Render Office Flooring (1280 x 720)
+    // 1. Render Office Flooring (1280 x 720) — Clean, strictly zoned without tile spills
     for (let x = 0; x < 1280; x += 32) {
       for (let y = 0; y < 720; y += 32) {
-        let floorTile = 'floor_office'; // Honey-Oak Parquet
-        // Reception lobby has polished warm cream & terracotta marble!
-        if (x <= 768 && y >= 512) {
-          floorTile = 'floor_marble';
-        }
-        // IT / Server room has dark cyber floor with glowing fiber conduits
-        else if (x >= 768 && y <= 512) {
+        let floorTile = 'floor_office'; // Honey-Oak Parquet for Main Office
+
+        // IT / Server Datacenter (Entire right wing: X >= 736)
+        if (x >= 736) {
           floorTile = 'floor_dark';
         }
-        // Manager's office has executive geometric carpet
-        else if (x <= 736 && y <= 224) {
+        // Reception & Lobby (Bottom-left wing: X < 736, Y >= 512)
+        else if (y >= 512) {
+          floorTile = 'floor_marble';
+        }
+        // Manager's Executive Office (Top-left wing: X < 736, Y <= 224)
+        else if (y <= 224) {
           floorTile = 'floor_carpet';
         }
+        // Main Office Floor (Middle: X < 736, 224 < Y < 512)
+        else {
+          floorTile = 'floor_office';
+        }
+
         const f = this.add.image(x + 16, y + 16, floorTile);
         f.setDepth(-10);
       }
@@ -111,9 +117,10 @@ export class OfficeScene extends Phaser.Scene {
     this.player = new Player(this, spawnX, spawnY);
     this.physics.add.collider(this.player, this.obstacles);
 
-    // Camera follow with boundaries
+    // 🌟 Camera: 2.2x Zoom with smooth cinematic follow!
     this.cameras.main.setBounds(0, 0, 1280, 720);
-    this.cameras.main.startFollow(this.player, true, 0.1, 0.1);
+    this.cameras.main.startFollow(this.player, true, 0.08, 0.08);
+    this.cameras.main.setZoom(2.2);
     this.cameras.main.fadeIn(500, 0, 0, 0);
 
     // Floating Interaction Prompt
@@ -239,6 +246,12 @@ export class OfficeScene extends Phaser.Scene {
 
   private buildFurniture() {
     const addObstacleProp = (x: number, y: number, key: string, w: number, h: number, offY = 0) => {
+      // Automatic soft contact drop shadow underneath every object
+      const shadow = this.add.image(x, y + (h / 2) + offY - 2, 'shadow_contact');
+      shadow.setScale(Math.max(0.6, w / 34), Math.max(0.4, (h / 32) * 0.55));
+      shadow.setAlpha(0.6);
+      shadow.setDepth(y - 1);
+
       const sprite = this.add.image(x, y, key);
       sprite.setDepth(y);
       const col = this.add.rectangle(x, y + offY, w, h, 0x000000, 0);
@@ -247,75 +260,137 @@ export class OfficeScene extends Phaser.Scene {
       return sprite;
     };
 
-    // 1. Reception Lobby
+    const addChair = (x: number, y: number) => {
+      const shadow = this.add.image(x, y + 12, 'shadow_contact');
+      shadow.setScale(0.55, 0.35);
+      shadow.setAlpha(0.55);
+      shadow.setDepth(y - 1);
+      const chair = this.add.image(x, y, 'chair');
+      chair.setDepth(y);
+      return chair;
+    };
+
+    // 1. Reception Lobby (Cozy, high-end welcoming space)
     // Reception Desk (64x32)
     addObstacleProp(640, 580, 'desk', 60, 24, 4);
-    // Receptionist Chair
-    this.add.image(640, 555, 'chair').setDepth(555);
-    // Decorative Plants
+    addChair(640, 555);
+
+    // Decorative Plants Framing Entrance & Desk
     addObstacleProp(520, 580, 'plant', 20, 20, 10);
     addObstacleProp(760, 580, 'plant', 20, 20, 10);
-    // Waiting Lounge Chairs
-    this.add.image(420, 660, 'chair').setDepth(660);
-    this.add.image(470, 660, 'chair').setDepth(660);
+    addObstacleProp(570, 675, 'plant', 20, 20, 10);
+    addObstacleProp(710, 675, 'plant', 20, 20, 10);
 
-    // 2. Main Office Area
+    // Waiting Lounge with Chairs & Coffee Table
+    addChair(400, 660);
+    addObstacleProp(445, 660, 'filing_cabinet', 24, 20, 4); // Coffee table
+    addChair(490, 660);
+
+    // 2. Main Office Area (Clustered 2x2 Cubicle Pods)
+    // POD A (Left): Player's Workstation Pod
     // PLAYER WORKSTATION (X: 360, Y: 360) -> Special glowing workstation desk!
     const playerDesk = addObstacleProp(360, 360, 'desk_with_pc', 60, 26, 4);
-    this.add.image(360, 395, 'chair').setDepth(395);
+    addChair(360, 395);
 
-    // Highlight beacon over player workstation
-    const beacon = this.add.circle(360, 360, 34, 0x00d2e6, 0.15);
+    // Golden / Cyan Highlight beacon over player workstation
+    const beacon = this.add.circle(360, 360, 36, 0xf8b839, 0.18);
     beacon.setDepth(359);
     this.tweens.add({
       targets: beacon,
       scale: { from: 0.9, to: 1.15 },
-      alpha: { from: 0.1, to: 0.3 },
+      alpha: { from: 0.12, to: 0.28 },
       yoyo: true,
       repeat: -1,
       duration: 1200
     });
 
-    // Other Colleague Desks
-    addObstacleProp(560, 360, 'desk_with_pc', 60, 26, 4);
-    this.add.image(560, 395, 'chair').setDepth(395);
+    // Colleague Desk in Pod A
+    addObstacleProp(435, 360, 'desk_with_pc', 60, 26, 4);
+    addChair(435, 395);
 
     addObstacleProp(360, 460, 'desk', 60, 24, 4);
-    this.add.image(360, 495, 'chair').setDepth(495);
+    addChair(360, 495);
 
-    addObstacleProp(560, 460, 'desk', 60, 24, 4);
-    this.add.image(560, 495, 'chair').setDepth(495);
+    addObstacleProp(435, 460, 'desk', 60, 24, 4);
+    addChair(435, 495);
 
-    // Water Dispenser
-    addObstacleProp(120, 470, 'water_dispenser', 20, 24, 10);
-    // Filing Cabinets
-    addObstacleProp(100, 270, 'filing_cabinet', 24, 24, 10);
-    addObstacleProp(140, 270, 'filing_cabinet', 24, 24, 10);
-    // Plants
-    addObstacleProp(80, 470, 'plant', 20, 20, 10);
+    // POD B (Right): Secondary Team Pod
+    addObstacleProp(580, 360, 'desk_with_pc', 60, 26, 4);
+    addChair(580, 395);
 
-    // 3. Manager's Office
-    // Executive Desk
+    addObstacleProp(655, 360, 'desk', 60, 24, 4);
+    addChair(655, 395);
+
+    addObstacleProp(580, 460, 'desk', 60, 24, 4);
+    addChair(580, 495);
+
+    addObstacleProp(655, 460, 'desk_with_pc', 60, 26, 4);
+    addChair(655, 495);
+
+    // Breakroom Corner (Left Wall)
+    addObstacleProp(90, 460, 'water_dispenser', 20, 24, 10);
+    addObstacleProp(90, 380, 'filing_cabinet', 24, 24, 10);
+    addObstacleProp(90, 320, 'plant', 20, 20, 10);
+
+    // Filing Cabinets along partition wall
+    addObstacleProp(160, 270, 'filing_cabinet', 24, 24, 10);
+    addObstacleProp(200, 270, 'filing_cabinet', 24, 24, 10);
+
+    // 3. Manager's Office (Executive Suite)
+    // Executive Mahogany Desk
     addObstacleProp(380, 140, 'desk_with_pc', 60, 26, 4);
-    this.add.image(380, 110, 'chair').setDepth(110);
+    addChair(380, 110);
+
     // Incident Briefing Whiteboard (64x32)
     addObstacleProp(540, 60, 'whiteboard', 60, 20, 0);
-    // Executive filing & plant
+
+    // Executive Credenza & Plants
     addObstacleProp(120, 90, 'filing_cabinet', 24, 24, 10);
     addObstacleProp(160, 90, 'plant', 20, 20, 10);
+    addObstacleProp(640, 90, 'plant', 20, 20, 10);
 
-    // 4. IT & Server Room
+    // 4. IT & Datacenter Core (Dense Server Corridors & Tech Bench)
     // IT Tech Workstation
-    addObstacleProp(880, 340, 'desk_with_pc', 60, 26, 4);
-    this.add.image(880, 375, 'chair').setDepth(375);
+    addObstacleProp(840, 340, 'desk_with_pc', 60, 26, 4);
+    addChair(840, 375);
+    addObstacleProp(840, 420, 'filing_cabinet', 24, 24, 10);
 
-    // Enterprise Server Racks
-    addObstacleProp(1080, 120, 'server_rack', 28, 48, 8);
-    addObstacleProp(1130, 120, 'server_rack', 28, 48, 8);
-    addObstacleProp(1080, 220, 'server_rack', 28, 48, 8);
-    addObstacleProp(1130, 220, 'server_rack', 28, 48, 8);
-    addObstacleProp(1080, 320, 'server_rack', 28, 48, 8);
-    addObstacleProp(1130, 320, 'server_rack', 28, 48, 8);
+    // Enterprise Server Rack Aisles (Aisle 1 & Aisle 2)
+    // Left Rack Aisle
+    addObstacleProp(1000, 140, 'server_rack', 28, 48, 8);
+    addObstacleProp(1000, 240, 'server_rack', 28, 48, 8);
+    addObstacleProp(1000, 340, 'server_rack', 28, 48, 8);
+    addObstacleProp(1000, 440, 'server_rack', 28, 48, 8);
+
+    // Right Rack Aisle
+    addObstacleProp(1140, 140, 'server_rack', 28, 48, 8);
+    addObstacleProp(1140, 240, 'server_rack', 28, 48, 8);
+    addObstacleProp(1140, 340, 'server_rack', 28, 48, 8);
+    addObstacleProp(1140, 440, 'server_rack', 28, 48, 8);
+
+    // Back Wall Power & Distribution Units
+    addObstacleProp(1070, 70, 'server_rack', 28, 48, 8);
+
+    // Pulsing colored LED halos in the Datacenter Corridor
+    const ledGlow1 = this.add.circle(1070, 240, 50, 0x00d2e6, 0.12);
+    ledGlow1.setDepth(239);
+    this.tweens.add({
+      targets: ledGlow1,
+      alpha: { from: 0.08, to: 0.2 },
+      yoyo: true,
+      repeat: -1,
+      duration: 1500
+    });
+
+    const ledGlow2 = this.add.circle(1070, 380, 50, 0x28e678, 0.12);
+    ledGlow2.setDepth(379);
+    this.tweens.add({
+      targets: ledGlow2,
+      alpha: { from: 0.08, to: 0.2 },
+      yoyo: true,
+      repeat: -1,
+      duration: 1900
+    });
 
     // Security Dome Camera
     this.add.image(1200, 60, 'security_camera').setDepth(200);
@@ -330,8 +405,8 @@ export class OfficeScene extends Phaser.Scene {
     this.receptionistNPC = new NPC(this, 640, 555, 'receptionist', 'receptionist', 'Elena Rostova', 'down');
     this.obstacles.add(this.receptionistNPC);
 
-    // 3. IT Technician Devon Reed (in IT room, facing left)
-    this.itTechNPC = new NPC(this, 880, 375, 'it_tech', 'itTech', 'Devon Reed', 'up');
+    // 3. IT Technician Devon Reed (in IT room, facing up towards his monitors)
+    this.itTechNPC = new NPC(this, 840, 375, 'it_tech', 'itTech', 'Devon Reed', 'up');
     this.obstacles.add(this.itTechNPC);
   }
 
@@ -369,9 +444,9 @@ export class OfficeScene extends Phaser.Scene {
     this.interactables.push({
       id: 'npc_it_tech',
       name: 'Devon Reed',
-      x: 880,
-      y: 350,
-      radius: 56,
+      x: 840,
+      y: 360,
+      radius: 64,
       actionText: 'TALK TO IT SPECIALIST',
       onInteract: () => {
         this.itTechNPC.facePlayer(this.player.x, this.player.y);

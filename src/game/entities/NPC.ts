@@ -24,6 +24,12 @@ export class NPC extends Phaser.Physics.Arcade.Sprite {
     scene.add.existing(this);
     scene.physics.add.existing(this, true); // Static body
 
+    // Contact drop shadow
+    const shadow = scene.add.image(x, y + 20, 'shadow_contact');
+    shadow.setScale(0.65, 0.45);
+    shadow.setAlpha(0.6);
+    shadow.setDepth(y - 1);
+
     this.setSize(20, 16);
     this.setOffset(6, 32);
     this.setDepth(y);

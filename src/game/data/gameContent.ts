@@ -7,19 +7,25 @@ export const SPEAKERS: Record<string, DialogueSpeaker> = {
     id: 'manager',
     name: 'Marcus Vance',
     title: 'Head of Cybersecurity',
-    avatar: '/assets/characters/manager.png'
+    avatar: '/assets/portraits/manager.png'
   },
   receptionist: {
     id: 'receptionist',
     name: 'Elena Rostova',
     title: 'Front Desk Coordinator',
-    avatar: '/assets/characters/receptionist.png'
+    avatar: '/assets/portraits/receptionist.png'
   },
   itTech: {
     id: 'itTech',
     name: 'Devon Reed',
     title: 'Lead Systems Engineer',
-    avatar: '/assets/characters/it_tech.png'
+    avatar: '/assets/portraits/it_tech.png'
+  },
+  player: {
+    id: 'player',
+    name: 'Junior Analyst',
+    title: 'Security Operations Center',
+    avatar: '/assets/portraits/player.png'
   }
 };
 
