@@ -56,6 +56,7 @@ export interface GameSaveData {
   caseFiles: Record<string, CaseFile>;
   completedMissions: string[];
   settings: GameSettings;
+  tutorialSeen: boolean;
   timestamp: number;
 }
 
@@ -138,6 +139,7 @@ const DEFAULT_STATE: GameSaveData = {
     sfx: true,
     crtEffect: true
   },
+  tutorialSeen: false,
   timestamp: Date.now()
 };
 
@@ -221,6 +223,11 @@ export class GameStateManager {
     return this.getState();
   }
 
+  public markTutorialSeen(): void {
+    this.state.tutorialSeen = true;
+    this.save();
+  }
+
   public updateState(partial: Partial<GameSaveData>): void {
     this.state = {
       ...this.state,
@@ -288,9 +295,19 @@ export class GameStateManager {
         score: newScore
       };
 
+      const totalClues = this.state.caseFiles[activeId]?.totalClues || 4;
+      const foundCount = newClues.length;
+      let newObjective = this.state.currentObjective;
+      if (foundCount < totalClues) {
+        newObjective = `Clues Found: ${foundCount}/${totalClues} — Keep investigating before making your decision`;
+      } else {
+        newObjective = `All ${totalClues} clues found! Open the DECISION MATRIX and take action`;
+      }
+
       this.updateState({
         discoveredClues: newClues,
         investigationScore: newScore,
+        currentObjective: newObjective,
         caseFile: updatedCase,
         caseFiles: {
           ...this.state.caseFiles,

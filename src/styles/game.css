@@ -16,9 +16,9 @@
   --text-white: #e8f4fc;
   --text-muted: #7e94b2;
 
-  --font-mono: 'Share Tech Mono', monospace;
-  --font-pixel: 'Press Start 2P', monospace;
-  --font-vt: 'VT323', monospace;
+  --font-mono: 'Share Tech Mono', 'Courier New', 'Lucida Console', monospace;
+  --font-pixel: 'Press Start 2P', 'Courier New', monospace;
+  --font-vt: 'VT323', 'Courier New', monospace;
 }
 
 * {

@@ -27,6 +27,7 @@ interface IAMConsoleAppProps {
 export const IAMConsoleApp: React.FC<IAMConsoleAppProps> = ({ onDecisionMade }) => {
   const [selectedClue, setSelectedClue] = useState<IAMClue | null>(null);
   const [showDecisionModal, setShowDecisionModal] = useState(false);
+  const [pendingDecision, setPendingDecision] = useState<SecurityDecision | null>(null);
 
   const state = gameState.getState();
   const discoveredClues = state.discoveredClues;
@@ -43,6 +44,7 @@ export const IAMConsoleApp: React.FC<IAMConsoleAppProps> = ({ onDecisionMade }) 
 
   const handleChooseDecision = (choice: SecurityDecision) => {
     audioSystem.play('computer_click');
+    setPendingDecision(null);
     onDecisionMade(choice);
   };
 
@@ -526,7 +528,7 @@ export const IAMConsoleApp: React.FC<IAMConsoleAppProps> = ({ onDecisionMade }) 
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <button
-                onClick={() => handleChooseDecision('ENFORCE_MFA_LOCKOUT')}
+                onClick={() => { audioSystem.play('computer_click'); setPendingDecision('ENFORCE_MFA_LOCKOUT'); }}
                 className="cyber-button cyber-button-success"
                 style={{ padding: '12px', fontSize: '10px', justifyContent: 'flex-start', textAlign: 'left' }}
               >
@@ -539,7 +541,7 @@ export const IAMConsoleApp: React.FC<IAMConsoleAppProps> = ({ onDecisionMade }) 
               </button>
 
               <button
-                onClick={() => handleChooseDecision('RESET_PASSWORD_ONLY')}
+                onClick={() => { audioSystem.play('computer_click'); setPendingDecision('RESET_PASSWORD_ONLY'); }}
                 className="cyber-button"
                 style={{ padding: '12px', fontSize: '10px', justifyContent: 'flex-start', textAlign: 'left' }}
               >
@@ -552,7 +554,7 @@ export const IAMConsoleApp: React.FC<IAMConsoleAppProps> = ({ onDecisionMade }) 
               </button>
 
               <button
-                onClick={() => handleChooseDecision('SMS_MFA_ONLY')}
+                onClick={() => { audioSystem.play('computer_click'); setPendingDecision('SMS_MFA_ONLY'); }}
                 className="cyber-button cyber-button-amber"
                 style={{ padding: '12px', fontSize: '10px', justifyContent: 'flex-start', textAlign: 'left' }}
               >
@@ -565,7 +567,7 @@ export const IAMConsoleApp: React.FC<IAMConsoleAppProps> = ({ onDecisionMade }) 
               </button>
 
               <button
-                onClick={() => handleChooseDecision('IGNORE_INCIDENT')}
+                onClick={() => { audioSystem.play('computer_click'); setPendingDecision('IGNORE_INCIDENT'); }}
                 className="cyber-button cyber-button-danger"
                 style={{ padding: '12px', fontSize: '10px', justifyContent: 'flex-start', textAlign: 'left' }}
               >
@@ -578,9 +580,43 @@ export const IAMConsoleApp: React.FC<IAMConsoleAppProps> = ({ onDecisionMade }) 
               </button>
             </div>
 
+            {pendingDecision && (
+              <div style={{
+                marginTop: '12px',
+                padding: '10px 14px',
+                background: 'rgba(245, 170, 40, 0.12)',
+                border: '1px solid var(--neon-amber)',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px'
+              }}>
+                <span style={{ fontSize: '12px', color: 'var(--neon-amber)', fontFamily: 'var(--font-mono)' }}>
+                  ⚠ CONFIRM: <strong>{pendingDecision.replace(/_/g, ' ')}</strong> — This action is irreversible.
+                </span>
+                <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                  <button
+                    onClick={() => { audioSystem.play('computer_click'); setPendingDecision(null); }}
+                    className="cyber-button"
+                    style={{ padding: '6px 12px', fontSize: '10px', borderColor: 'var(--text-muted)', color: 'var(--text-muted)' }}
+                  >
+                    CANCEL
+                  </button>
+                  <button
+                    onClick={() => handleChooseDecision(pendingDecision)}
+                    className="cyber-button"
+                    style={{ padding: '6px 12px', fontSize: '10px', borderColor: 'var(--neon-amber)', color: 'var(--neon-amber)' }}
+                  >
+                    EXECUTE
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
               <button
-                onClick={() => setShowDecisionModal(false)}
+                onClick={() => { setShowDecisionModal(false); setPendingDecision(null); }}
                 className="cyber-button"
                 style={{ padding: '6px 14px', fontSize: '10px' }}
               >

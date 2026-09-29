@@ -17,6 +17,7 @@ import { ConsequencesModal } from './ui/MissionResults/ConsequencesModal';
 import { MissionResultsModal } from './ui/MissionResults/MissionResultsModal';
 import { SettingsModal } from './ui/Settings/SettingsModal';
 import { CaseFilesModal } from './ui/CaseFile/CaseFilesModal';
+import { TutorialOverlay } from './ui/Tutorial/TutorialOverlay';
 
 export const App: React.FC = () => {
   const gameRef = useRef<Phaser.Game | null>(null);
@@ -28,6 +29,7 @@ export const App: React.FC = () => {
   const [showComputer, setShowComputer] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showCaseFiles, setShowCaseFiles] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   // Decision & Results flow
   const [activeDecision, setActiveDecision] = useState<SecurityDecision | null>(null);
@@ -91,6 +93,7 @@ export const App: React.FC = () => {
   const handleContinueGame = () => {
     const loaded = gameState.continueGame();
     setShowMainMenu(false);
+    audioSystem.playAmbient();
 
     if (gameRef.current) {
       const sceneManager = gameRef.current.scene;
@@ -111,6 +114,13 @@ export const App: React.FC = () => {
       sceneManager.stop('OfficeScene');
       sceneManager.start('ExteriorScene');
     }
+
+    audioSystem.playAmbient();
+
+    // Show tutorial on first play
+    if (!gameState.getState().tutorialSeen) {
+      setShowTutorial(true);
+    }
   };
 
   // Computer Closed
@@ -125,9 +135,11 @@ export const App: React.FC = () => {
     setActiveDecision(decision);
     setDecisionOutcome(result);
 
-    if (decision === 'REPORT') {
+    const goodDecisions = ['REPORT', 'ENFORCE_MFA_LOCKOUT', 'SINKHOLE_AND_ADVISE'];
+    const badDecisions = ['OPEN_LINK', 'REPLY', 'IGNORE_INCIDENT', 'TRUST_HTTPS_PADLOCK'];
+    if (goodDecisions.includes(decision)) {
       audioSystem.play('success');
-    } else if (decision === 'OPEN_LINK') {
+    } else if (badDecisions.includes(decision)) {
       audioSystem.play('error');
     } else {
       audioSystem.play('warning');
@@ -200,6 +212,11 @@ export const App: React.FC = () => {
 
       {/* Intro Cutscene */}
       {showIntro && <IntroCutscene onComplete={handleIntroComplete} />}
+
+      {/* Tutorial Overlay — first-launch only */}
+      {showTutorial && (
+        <TutorialOverlay onDismiss={() => setShowTutorial(false)} />
+      )}
 
       {/* In-Game OS Computer Desktop */}
       {showComputer && (

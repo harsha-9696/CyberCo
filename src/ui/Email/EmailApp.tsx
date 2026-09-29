@@ -29,6 +29,7 @@ export const EmailApp: React.FC<EmailAppProps> = ({ onDecisionMade }) => {
   const [selectedClue, setSelectedClue] = useState<PhishingClue | null>(null);
   const [hoveredLink, setHoveredLink] = useState(false);
   const [showDecisionModal, setShowDecisionModal] = useState(false);
+  const [pendingDecision, setPendingDecision] = useState<'REPORT' | 'DELETE' | 'REPLY' | 'OPEN_LINK' | null>(null);
 
   const state = gameState.getState();
   const discoveredClues = state.discoveredClues;
@@ -45,6 +46,7 @@ export const EmailApp: React.FC<EmailAppProps> = ({ onDecisionMade }) => {
 
   const handleChooseDecision = (choice: 'REPORT' | 'DELETE' | 'REPLY' | 'OPEN_LINK') => {
     audioSystem.play('computer_click');
+    setPendingDecision(null);
     onDecisionMade(choice);
   };
 
@@ -583,7 +585,7 @@ export const EmailApp: React.FC<EmailAppProps> = ({ onDecisionMade }) => {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <button
-                onClick={() => handleChooseDecision('REPORT')}
+                onClick={() => { audioSystem.play('computer_click'); setPendingDecision('REPORT'); }}
                 className="cyber-button cyber-button-success"
                 style={{ padding: '12px', fontSize: '11px', justifyContent: 'flex-start' }}
               >
@@ -592,7 +594,7 @@ export const EmailApp: React.FC<EmailAppProps> = ({ onDecisionMade }) => {
               </button>
 
               <button
-                onClick={() => handleChooseDecision('DELETE')}
+                onClick={() => { audioSystem.play('computer_click'); setPendingDecision('DELETE'); }}
                 className="cyber-button"
                 style={{ padding: '12px', fontSize: '11px', justifyContent: 'flex-start' }}
               >
@@ -601,7 +603,7 @@ export const EmailApp: React.FC<EmailAppProps> = ({ onDecisionMade }) => {
               </button>
 
               <button
-                onClick={() => handleChooseDecision('REPLY')}
+                onClick={() => { audioSystem.play('computer_click'); setPendingDecision('REPLY'); }}
                 className="cyber-button cyber-button-amber"
                 style={{ padding: '12px', fontSize: '11px', justifyContent: 'flex-start' }}
               >
@@ -610,7 +612,7 @@ export const EmailApp: React.FC<EmailAppProps> = ({ onDecisionMade }) => {
               </button>
 
               <button
-                onClick={() => handleChooseDecision('OPEN_LINK')}
+                onClick={() => { audioSystem.play('computer_click'); setPendingDecision('OPEN_LINK'); }}
                 className="cyber-button cyber-button-danger"
                 style={{ padding: '12px', fontSize: '11px', justifyContent: 'flex-start' }}
               >
@@ -619,9 +621,43 @@ export const EmailApp: React.FC<EmailAppProps> = ({ onDecisionMade }) => {
               </button>
             </div>
 
+            {pendingDecision && (
+              <div style={{
+                marginTop: '12px',
+                padding: '10px 14px',
+                background: 'rgba(245, 170, 40, 0.12)',
+                border: '1px solid var(--neon-amber)',
+                borderRadius: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '12px'
+              }}>
+                <span style={{ fontSize: '12px', color: 'var(--neon-amber)', fontFamily: 'var(--font-mono)' }}>
+                  ⚠ CONFIRM: <strong>{pendingDecision.replace(/_/g, ' ')}</strong> — This action is irreversible.
+                </span>
+                <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                  <button
+                    onClick={() => { audioSystem.play('computer_click'); setPendingDecision(null); }}
+                    className="cyber-button"
+                    style={{ padding: '6px 12px', fontSize: '10px', borderColor: 'var(--text-muted)', color: 'var(--text-muted)' }}
+                  >
+                    CANCEL
+                  </button>
+                  <button
+                    onClick={() => handleChooseDecision(pendingDecision)}
+                    className="cyber-button"
+                    style={{ padding: '6px 12px', fontSize: '10px', borderColor: 'var(--neon-amber)', color: 'var(--neon-amber)' }}
+                  >
+                    EXECUTE
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'flex-end' }}>
               <button
-                onClick={() => setShowDecisionModal(false)}
+                onClick={() => { setShowDecisionModal(false); setPendingDecision(null); }}
                 className="cyber-button"
                 style={{ padding: '6px 14px', fontSize: '10px' }}
               >

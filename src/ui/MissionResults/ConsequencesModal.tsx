@@ -22,9 +22,11 @@ export const ConsequencesModal: React.FC<ConsequencesModalProps> = ({
   result,
   onContinue
 }) => {
-  const isPositive = decision === 'REPORT';
-  const isNeutral = decision === 'DELETE';
-  const isDanger = decision === 'OPEN_LINK' || decision === 'REPLY';
+  const goodDecisions = ['REPORT', 'ENFORCE_MFA_LOCKOUT', 'SINKHOLE_AND_ADVISE'];
+  const badDecisions = ['OPEN_LINK', 'REPLY', 'IGNORE_INCIDENT', 'TRUST_HTTPS_PADLOCK'];
+  const isPositive = goodDecisions.includes(decision);
+  const isDanger = badDecisions.includes(decision);
+  const isNeutral = !isPositive && !isDanger;
 
   return (
     <div

@@ -345,16 +345,24 @@ export class OfficeScene extends Phaser.Scene {
         const mission1Done = state.completedMissions.includes('MISSION-001');
         const mission2Done = state.completedMissions.includes('MISSION-002');
         const mission3Done = state.completedMissions.includes('MISSION-003');
+        const mission3Active = state.activeMissionId === 'MISSION-003' && !mission3Done;
 
         if (mission3Done) {
           eventBridge.emit(GameEvents.START_DIALOGUE, {
             speaker: SPEAKERS.itTech,
             lines: DIALOGUES.itTechMission3Complete
           });
-        } else if (mission2Done) {
+        } else if (mission3Active) {
+          // Mission 3 already started — just show the briefing reminder
           eventBridge.emit(GameEvents.START_DIALOGUE, {
             speaker: SPEAKERS.itTech,
-            lines: DIALOGUES.itTechMission3Briefing,
+            lines: DIALOGUES.itTechMission3Briefing
+          });
+        } else if (mission2Done) {
+          // Mission 2 complete, not yet started M3 — auto-start it here
+          eventBridge.emit(GameEvents.START_DIALOGUE, {
+            speaker: SPEAKERS.itTech,
+            lines: DIALOGUES.itTechMission2Complete,
             onComplete: () => {
               gameState.startMission3();
               audioSystem.play('warning');

@@ -43,6 +43,9 @@ class AudioManager {
 
   public setMuted(muted: boolean) {
     this.isMuted = muted;
+    if (muted) {
+      this.stopAmbient();
+    }
   }
 
   public play(sfx: SoundEffect): void {
@@ -218,6 +221,64 @@ class AudioManager {
         break;
       }
     }
+  }
+
+  private ambientOscillators: OscillatorNode[] = [];
+  private ambientGain: GainNode | null = null;
+  public isAmbientPlaying = false;
+
+  public playAmbient(): void {
+    if (this.isMuted || this.isAmbientPlaying) return;
+    const ctx = this.initCtx();
+    if (!ctx) return;
+
+    this.ambientGain = ctx.createGain();
+    this.ambientGain.gain.setValueAtTime(0.035, ctx.currentTime);
+    this.ambientGain.connect(ctx.destination);
+
+    // Low drone
+    const drone = ctx.createOscillator();
+    drone.type = 'sine';
+    drone.frequency.setValueAtTime(55, ctx.currentTime);
+    drone.connect(this.ambientGain);
+    drone.start();
+    this.ambientOscillators.push(drone);
+
+    // Harmonic shimmer
+    const shimmer = ctx.createOscillator();
+    shimmer.type = 'triangle';
+    shimmer.frequency.setValueAtTime(220, ctx.currentTime);
+    const shimGain = ctx.createGain();
+    shimGain.gain.setValueAtTime(0.012, ctx.currentTime);
+    shimmer.connect(shimGain);
+    shimGain.connect(ctx.destination);
+    shimmer.start();
+    this.ambientOscillators.push(shimmer);
+
+    // Slow LFO modulation on drone frequency for breathing effect
+    const lfo = ctx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.setValueAtTime(0.18, ctx.currentTime);
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.setValueAtTime(4, ctx.currentTime);
+    lfo.connect(lfoGain);
+    lfoGain.connect(drone.frequency);
+    lfo.start();
+    this.ambientOscillators.push(lfo);
+
+    this.isAmbientPlaying = true;
+  }
+
+  public stopAmbient(): void {
+    for (const osc of this.ambientOscillators) {
+      try { osc.stop(); } catch { /* already stopped */ }
+    }
+    if (this.ambientGain) {
+      try { this.ambientGain.disconnect(); } catch { /* already disconnected */ }
+      this.ambientGain = null;
+    }
+    this.ambientOscillators = [];
+    this.isAmbientPlaying = false;
   }
 }
 
