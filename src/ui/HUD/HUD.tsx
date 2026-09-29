@@ -30,29 +30,30 @@ export const HUD: React.FC<HUDProps> = ({ onOpenSettings, onOpenCaseFiles }) => 
         top: 0,
         left: 0,
         right: 0,
-        padding: '10px 16px',
+        padding: '10px 20px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        background: 'linear-gradient(180deg, rgba(8, 12, 20, 0.95) 0%, rgba(8, 12, 20, 0.75) 80%, rgba(8, 12, 20, 0) 100%)',
-        borderBottom: '1px solid rgba(0, 210, 230, 0.25)',
+        background: 'linear-gradient(180deg, rgba(18, 16, 26, 0.96) 0%, rgba(18, 16, 26, 0.8) 80%, rgba(18, 16, 26, 0) 100%)',
+        borderBottom: '2px solid transparent',
+        borderImage: 'linear-gradient(90deg, #f8b839, #00d2e6, #f28526) 1',
         zIndex: 500,
         pointerEvents: 'none'
       }}
     >
       {/* Left: Player Badge & Stats */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '20px', pointerEvents: 'auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '22px', pointerEvents: 'auto' }}>
         {/* Role ID */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '10px', color: 'var(--text-muted)', letterSpacing: '1px' }}>
+          <span style={{ fontSize: '10px', color: 'var(--sunset-gold)', letterSpacing: '1.5px', fontWeight: 'bold' }}>
             OPERATOR
           </span>
           <span
             style={{
               fontFamily: 'var(--font-pixel)',
               fontSize: '11px',
-              color: 'var(--cyan-bright)',
-              textShadow: '0 0 8px var(--cyan-bright)'
+              color: '#fff',
+              textShadow: '0 0 10px rgba(248, 184, 57, 0.6)'
             }}
           >
             JR. ANALYST
@@ -77,13 +78,13 @@ export const HUD: React.FC<HUDProps> = ({ onOpenSettings, onOpenCaseFiles }) => 
 
         {/* Risk Metric */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <AlertTriangle size={16} color={risk > 40 ? 'var(--neon-red)' : 'var(--neon-amber)'} />
+          <AlertTriangle size={16} color={risk > 40 ? 'var(--neon-red)' : 'var(--sunset-gold)'} />
           <div style={{ display: 'flex', flexDirection: 'column', width: '90px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '9px', marginBottom: '2px' }}>
               <span style={{ color: 'var(--text-muted)' }}>SYSTEM RISK</span>
               <span
                 style={{
-                  color: risk > 40 ? 'var(--neon-red)' : 'var(--neon-amber)',
+                  color: risk > 40 ? 'var(--neon-red)' : 'var(--sunset-gold)',
                   fontFamily: 'var(--font-pixel)',
                   fontSize: '8px'
                 }}
@@ -96,7 +97,7 @@ export const HUD: React.FC<HUDProps> = ({ onOpenSettings, onOpenCaseFiles }) => 
                 className="stat-bar-fill stat-bar-red"
                 style={{
                   width: `${risk}%`,
-                  background: risk > 40 ? 'linear-gradient(90deg, #991a2e, #ff3355)' : 'linear-gradient(90deg, #99661a, #f5aa28)'
+                  background: risk > 40 ? 'linear-gradient(90deg, #991a2e, #ff3355)' : 'linear-gradient(90deg, #99661a, #f8b839)'
                 }}
               />
             </div>
@@ -105,8 +106,8 @@ export const HUD: React.FC<HUDProps> = ({ onOpenSettings, onOpenCaseFiles }) => 
 
         {/* XP */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <Award size={16} color="var(--neon-green)" />
-          <span style={{ fontFamily: 'var(--font-pixel)', fontSize: '10px', color: 'var(--neon-green)' }}>
+          <Award size={16} color="var(--sunset-gold)" />
+          <span style={{ fontFamily: 'var(--font-pixel)', fontSize: '10px', color: 'var(--sunset-gold)', textShadow: '0 0 8px rgba(248, 184, 57, 0.5)' }}>
             {xp} <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>XP</span>
           </span>
         </div>
@@ -118,15 +119,16 @@ export const HUD: React.FC<HUDProps> = ({ onOpenSettings, onOpenCaseFiles }) => 
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
-          background: 'rgba(16, 24, 38, 0.85)',
-          border: '1px solid var(--border-cyber)',
-          padding: '6px 14px',
+          background: 'rgba(28, 22, 38, 0.88)',
+          border: '1px solid var(--sunset-gold)',
+          boxShadow: '0 0 12px rgba(248, 184, 57, 0.25)',
+          padding: '6px 16px',
           borderRadius: '4px',
-          maxWidth: '480px'
+          maxWidth: '500px'
         }}
       >
-        <Compass size={14} color="var(--neon-amber)" className="animate-blink" />
-        <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>OBJECTIVE:</span>
+        <Compass size={14} color="var(--sunset-gold)" className="animate-blink" />
+        <span style={{ fontSize: '11px', color: 'var(--sunset-gold)', fontWeight: 'bold' }}>OBJECTIVE:</span>
         <span
           style={{
             fontSize: '12px',

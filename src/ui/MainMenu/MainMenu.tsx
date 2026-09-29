@@ -31,35 +31,50 @@ export const MainMenu: React.FC<MainMenuProps> = ({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'radial-gradient(circle at 50% 40%, #162238 0%, #080d16 100%)',
+        background: 'radial-gradient(ellipse at 50% 55%, rgba(242, 134, 40, 0.45) 0%, rgba(122, 34, 91, 0.45) 40%, rgba(42, 24, 68, 0.95) 75%, #0f0b18 100%)',
         zIndex: 1000,
         overflow: 'hidden'
       }}
     >
-      {/* Background Pixel City Skyline Silhouette & Animated Rain */}
+      {/* Radiant Golden Hour Sun Disc in Background */}
+      <div
+        style={{
+          position: 'absolute',
+          width: '260px',
+          height: '260px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, #fff5b8 0%, #f8b839 40%, #f28526 70%, transparent 100%)',
+          boxShadow: '0 0 80px rgba(248, 184, 57, 0.6), 0 0 140px rgba(242, 134, 40, 0.3)',
+          opacity: 0.85,
+          top: '20%',
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Cyber Grid Floor Perspective */}
       <div
         style={{
           position: 'absolute',
           inset: 0,
           backgroundImage: `
-            linear-gradient(rgba(0, 210, 230, 0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(0, 210, 230, 0.04) 1px, transparent 1px)
+            linear-gradient(rgba(248, 184, 57, 0.08) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(248, 184, 57, 0.08) 1px, transparent 1px)
           `,
-          backgroundSize: '32px 32px',
-          opacity: 0.8,
+          backgroundSize: '40px 40px',
+          opacity: 0.7,
           pointerEvents: 'none'
         }}
       />
 
       {/* Cyber Corner Decals */}
-      <div style={{ position: 'absolute', top: 20, left: 24, fontSize: '11px', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-        <Terminal size={14} color="var(--cyan-bright)" />
-        <span>SECURE TERMINAL // NODE 01</span>
+      <div style={{ position: 'absolute', top: 20, left: 24, fontSize: '11px', color: 'var(--sunset-gold)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+        <Terminal size={14} color="var(--sunset-gold)" />
+        <span>NEO-TOKYO HQ // SOC NODE 01</span>
       </div>
 
       <div style={{ position: 'absolute', top: 20, right: 24, fontSize: '11px', color: 'var(--neon-green)', display: 'flex', alignItems: 'center', gap: '6px' }}>
         <span className="animate-blink">●</span>
-        <span>DEFENSIVE OPS ACTIVE</span>
+        <span>DEFENSIVE OPS // ACTIVE</span>
       </div>
 
       {/* Main Title Container */}
@@ -74,14 +89,16 @@ export const MainMenu: React.FC<MainMenuProps> = ({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '8px' }}>
-          <ShieldAlert size={36} color="var(--cyan-bright)" className="animate-pulse-glow" />
+          <ShieldAlert size={40} color="var(--sunset-gold)" className="animate-pulse-glow" />
           <h1
             style={{
               fontFamily: 'var(--font-pixel)',
-              fontSize: '44px',
+              fontSize: '46px',
               letterSpacing: '6px',
-              color: 'var(--cyan-bright)',
-              textShadow: '0 0 20px rgba(0, 210, 230, 0.8), 0 0 40px rgba(0, 210, 230, 0.4)',
+              background: 'linear-gradient(180deg, #fff5b8 0%, #f8b839 50%, #f28526 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 0 25px rgba(248, 184, 57, 0.7))',
               margin: 0
             }}
           >
@@ -94,9 +111,9 @@ export const MainMenu: React.FC<MainMenuProps> = ({
             fontFamily: 'var(--font-mono)',
             fontSize: '15px',
             letterSpacing: '5px',
-            color: 'var(--text-white)',
+            color: '#fff',
             textTransform: 'uppercase',
-            opacity: 0.9,
+            textShadow: '0 0 10px rgba(248, 184, 57, 0.8)',
             marginTop: '4px'
           }}
         >

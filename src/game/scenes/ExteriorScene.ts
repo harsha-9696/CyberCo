@@ -23,19 +23,84 @@ export class ExteriorScene extends Phaser.Scene {
     this.physics.world.setBounds(0, 0, 1280, 720);
     this.obstacles = this.physics.add.staticGroup();
 
-    // Night Sky / Top Backdrop
-    const sky = this.add.rectangle(640, 80, 1280, 160, 0x0a0e16);
-    sky.setDepth(-10);
+    // 1. Neo-Tokyo Golden Hour Sky Backdrop (Y: 0 to 180)
+    // Multi-layer sunset gradient from twilight violet down to glowing gold horizon
+    const skyLayers = [
+      { y: 15, h: 30, color: 0x2a1744 }, // Twilight Violet
+      { y: 45, h: 30, color: 0x5a1f4e }, // Sunset Plum
+      { y: 75, h: 30, color: 0x932b4b }, // Magenta Rose
+      { y: 105, h: 30, color: 0xcc4e34 }, // Coral Orange
+      { y: 135, h: 30, color: 0xf28526 }, // Warm Amber Sunset
+      { y: 165, h: 30, color: 0xf8b839 }  // Golden Horizon Glow
+    ];
+    skyLayers.forEach(layer => {
+      const rect = this.add.rectangle(640, layer.y, 1280, layer.h, layer.color);
+      rect.setDepth(-20);
+    });
 
-    // Stars / City Lights in distant background
-    for (let i = 0; i < 40; i++) {
-      const rx = Phaser.Math.Between(20, 1260);
-      const ry = Phaser.Math.Between(10, 110);
-      const color = i % 3 === 0 ? 0x00d2e6 : i % 5 === 0 ? 0xf5aa28 : 0xffffff;
-      const alpha = Phaser.Math.FloatBetween(0.3, 0.9);
-      const star = this.add.rectangle(rx, ry, 2, 2, color, alpha);
-      star.setDepth(-9);
-    }
+    // Radiant Setting Sun with Soft Glowing Halo (positioned at X: 860, Y: 70)
+    const sunHalo = this.add.circle(860, 70, 68, 0xf28526, 0.25);
+    sunHalo.setDepth(-19);
+    const sunInnerHalo = this.add.circle(860, 70, 48, 0xf8b839, 0.45);
+    sunInnerHalo.setDepth(-18);
+    const sunOrb = this.add.circle(860, 70, 30, 0xfff2a8, 0.95);
+    sunOrb.setDepth(-17);
+
+    // Subtle sun pulsation tween
+    this.tweens.add({
+      targets: sunInnerHalo,
+      scale: { from: 0.95, to: 1.08 },
+      alpha: { from: 0.35, to: 0.55 },
+      yoyo: true,
+      repeat: -1,
+      duration: 3200,
+      ease: 'Sine.easeInOut'
+    });
+
+    // Distant Neo-Tokyo City Skyline Silhouette
+    const skylineBuildings = [
+      { x: 120, w: 90, h: 95 },
+      { x: 260, w: 110, h: 125 },
+      { x: 400, w: 75, h: 80 },
+      { x: 530, w: 95, h: 140 },
+      { x: 720, w: 105, h: 110 },
+      { x: 1010, w: 120, h: 130 },
+      { x: 1180, w: 90, h: 90 }
+    ];
+    skylineBuildings.forEach(b => {
+      const building = this.add.rectangle(b.x, 150 - b.h / 2, b.w, b.h, 0x1d1428);
+      building.setDepth(-16);
+
+      // Glowing golden office windows
+      const cols = Math.floor(b.w / 14);
+      const rows = Math.floor(b.h / 16);
+      for (let r = 1; r < rows; r++) {
+        for (let c = 1; c < cols; c++) {
+          if ((r + c) % 2 === 0) {
+            const winX = b.x - b.w / 2 + c * 14;
+            const winY = 150 - b.h + r * 16;
+            const winColor = (r + c) % 3 === 0 ? 0xffea88 : (r + c) % 5 === 0 ? 0x00d2e6 : 0xf28526;
+            const win = this.add.rectangle(winX, winY, 6, 8, winColor, 0.7);
+            win.setDepth(-15);
+          }
+        }
+      }
+
+      // Spire antenna on tallest towers
+      if (b.h > 115) {
+        const spire = this.add.rectangle(b.x, 150 - b.h - 12, 3, 24, 0x3d2b4e);
+        spire.setDepth(-16);
+        const beacon = this.add.circle(b.x, 150 - b.h - 24, 2.5, 0xff3355);
+        beacon.setDepth(-14);
+        this.tweens.add({
+          targets: beacon,
+          alpha: { from: 0.2, to: 1 },
+          yoyo: true,
+          repeat: -1,
+          duration: 900
+        });
+      }
+    });
 
     // Building Wall Facade (Y: 100 to 280)
     for (let x = 0; x < 1280; x += 32) {
@@ -65,7 +130,7 @@ export class ExteriorScene extends Phaser.Scene {
     // Subtle neon pulse animation on sign
     this.tweens.add({
       targets: sign,
-      alpha: { from: 0.85, to: 1.0 },
+      alpha: { from: 0.88, to: 1.0 },
       yoyo: true,
       repeat: -1,
       duration: 1800,
@@ -75,6 +140,10 @@ export class ExteriorScene extends Phaser.Scene {
     // Building Entrance Arch & Doors (Center: 640, 256)
     const entranceDoors = this.add.image(640, 256, 'building_entrance');
     entranceDoors.setDepth(-1);
+
+    // Welcoming warm light spill onto sidewalk in front of entrance
+    const entranceGlow = this.add.ellipse(640, 280, 140, 48, 0xffd060, 0.22);
+    entranceGlow.setDepth(-7);
 
     // Sidewalk (Y: 280 to 520)
     for (let x = 0; x < 1280; x += 32) {
@@ -99,7 +168,14 @@ export class ExteriorScene extends Phaser.Scene {
     this.physics.add.existing(roadCurb, true);
     this.obstacles.add(roadCurb);
 
-    // Street Lamps with Warm Amber Glow
+    // Parked Futuristic Cyber-Cab at curb
+    const cab = this.add.image(860, 560, 'cyber_cab');
+    cab.setDepth(560);
+    const cabCollision = this.add.rectangle(860, 564, 60, 20, 0x000000, 0);
+    this.physics.add.existing(cabCollision, true);
+    this.obstacles.add(cabCollision);
+
+    // Street Lamps with Warm Amber Glow Halos
     const lampPositions = [
       { x: 340, y: 350 },
       { x: 940, y: 350 }
@@ -110,9 +186,21 @@ export class ExteriorScene extends Phaser.Scene {
       const base = this.add.rectangle(pos.x, pos.y + 26, 12, 10, 0x000000, 0);
       this.physics.add.existing(base, true);
       this.obstacles.add(base);
+
+      // Warm sodium light halo illuminating sidewalk
+      const lampLight = this.add.circle(pos.x, pos.y + 24, 64, 0xffba30, 0.16);
+      lampLight.setDepth(-7);
+      this.tweens.add({
+        targets: lampLight,
+        alpha: { from: 0.12, to: 0.22 },
+        yoyo: true,
+        repeat: -1,
+        duration: 2200,
+        ease: 'Sine.easeInOut'
+      });
     });
 
-    // Potted / Decorative Trees along sidewalk
+    // Golden Autumn / Ginkgo Trees along sidewalk
     const treePositions = [
       { x: 230, y: 380 },
       { x: 450, y: 320 },
@@ -126,6 +214,25 @@ export class ExteriorScene extends Phaser.Scene {
       this.physics.add.existing(base, true);
       this.obstacles.add(base);
     });
+
+    // Drifting Golden Autumn Leaves in the twilight breeze
+    for (let i = 0; i < 18; i++) {
+      const lx = Phaser.Math.Between(100, 1180);
+      const ly = Phaser.Math.Between(260, 620);
+      const leafColor = i % 2 === 0 ? 0xf28526 : 0xf8b839;
+      const leaf = this.add.rectangle(lx, ly, 3, 2, leafColor, 0.85);
+      leaf.setDepth(ly);
+      this.tweens.add({
+        targets: leaf,
+        x: `+=${Phaser.Math.Between(40, 100)}`,
+        y: `+=${Phaser.Math.Between(20, 60)}`,
+        rotation: 3.14 * 2,
+        duration: Phaser.Math.Between(4000, 7500),
+        repeat: -1,
+        yoyo: true,
+        ease: 'Sine.easeInOut'
+      });
+    }
 
     // 2. Entrance Interaction Zone
     this.entranceZone = this.add.zone(640, 276, 72, 40);

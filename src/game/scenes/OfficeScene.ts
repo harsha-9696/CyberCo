@@ -44,18 +44,54 @@ export class OfficeScene extends Phaser.Scene {
     // 1. Render Office Flooring (1280 x 720)
     for (let x = 0; x < 1280; x += 32) {
       for (let y = 0; y < 720; y += 32) {
-        let floorTile = 'floor_office';
-        // IT / Server room has dark cyber floor
-        if (x >= 768 && y <= 512) {
+        let floorTile = 'floor_office'; // Honey-Oak Parquet
+        // Reception lobby has polished warm cream & terracotta marble!
+        if (x <= 768 && y >= 512) {
+          floorTile = 'floor_marble';
+        }
+        // IT / Server room has dark cyber floor with glowing fiber conduits
+        else if (x >= 768 && y <= 512) {
           floorTile = 'floor_dark';
         }
-        // Manager's office has executive carpet
+        // Manager's office has executive geometric carpet
         else if (x <= 736 && y <= 224) {
           floorTile = 'floor_carpet';
         }
         const f = this.add.image(x + 16, y + 16, floorTile);
         f.setDepth(-10);
       }
+    }
+
+    // Warm Golden Hour Sun Rays Streaming In Through Windows
+    for (let x = 0; x < 1280; x += 96) {
+      const sunBeam = this.add.ellipse(x + 48, 85, 90, 110, 0xffd060, 0.08);
+      sunBeam.setDepth(-4);
+      this.tweens.add({
+        targets: sunBeam,
+        alpha: { from: 0.05, to: 0.11 },
+        yoyo: true,
+        repeat: -1,
+        duration: 3400,
+        ease: 'Sine.easeInOut'
+      });
+    }
+
+    // Floating Warm Dust Motes in the Sunlit Office Air
+    for (let i = 0; i < 24; i++) {
+      const px = Phaser.Math.Between(80, 1200);
+      const py = Phaser.Math.Between(60, 660);
+      const mote = this.add.circle(px, py, 1.5, 0xffe888, Phaser.Math.FloatBetween(0.2, 0.6));
+      mote.setDepth(py);
+      this.tweens.add({
+        targets: mote,
+        x: `+=${Phaser.Math.Between(-20, 20)}`,
+        y: `+=${Phaser.Math.Between(-15, 15)}`,
+        alpha: { from: 0.2, to: 0.6 },
+        yoyo: true,
+        repeat: -1,
+        duration: Phaser.Math.Between(2500, 5000),
+        ease: 'Sine.easeInOut'
+      });
     }
 
     // 2. Build Perimeter and Interior Partition Walls

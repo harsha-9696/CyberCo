@@ -3,18 +3,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&family=Press+Start+2P&display=swap');
 
 :root {
-  --bg-dark: #0a0e16;
-  --bg-panel: #111726;
-  --bg-panel-light: #1b2438;
+  --bg-dark: #12141c;
+  --bg-panel: #161a26;
+  --bg-panel-light: #202738;
   --cyan-bright: #00d2e6;
   --cyan-glow: rgba(0, 210, 230, 0.4);
   --cyan-dark: #008899;
   --neon-red: #ff3355;
   --neon-green: #28e678;
   --neon-amber: #f5aa28;
-  --border-cyber: #2a3a5a;
-  --text-white: #e8f4fc;
-  --text-muted: #7e94b2;
+  --sunset-gold: #f8b839;
+  --sunset-orange: #f28526;
+  --sunset-coral: #ff5757;
+  --sunset-plum: #7a225b;
+  --honey-oak: #cf8f54;
+  --birch-light: #f0d3a7;
+  --marble-cream: #faf6ec;
+  --border-cyber: #2d384e;
+  --text-white: #f5f8fc;
+  --text-muted: #8b9eb5;
 
   --font-mono: 'Share Tech Mono', 'Courier New', 'Lucida Console', monospace;
   --font-pixel: 'Press Start 2P', 'Courier New', monospace;

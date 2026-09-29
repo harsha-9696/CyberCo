@@ -51,27 +51,55 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
       style={{
         position: 'absolute',
         inset: 0,
-        backgroundColor: '#070c14',
-        backgroundImage: 'radial-gradient(circle at 50% 50%, #111a2c 0%, #060a12 100%)',
+        backgroundColor: '#110c1c',
+        backgroundImage: 'radial-gradient(ellipse at 50% 35%, rgba(242, 134, 40, 0.35) 0%, rgba(122, 34, 91, 0.35) 45%, #0e0918 100%)',
         display: 'flex',
         flexDirection: 'column',
         zIndex: 1200,
         overflow: 'hidden'
       }}
     >
+      {/* Golden Hour Horizon Wireframe & Wallpaper Accent */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: `
+            linear-gradient(rgba(248, 184, 57, 0.05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(248, 184, 57, 0.05) 1px, transparent 1px)
+          `,
+          backgroundSize: '48px 48px',
+          pointerEvents: 'none'
+        }}
+      />
+
+      {/* Sun glow orb in upper desktop */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '15%',
+          right: '25%',
+          width: '280px',
+          height: '280px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(255, 240, 160, 0.25) 0%, rgba(242, 134, 40, 0.15) 50%, transparent 75%)',
+          pointerEvents: 'none'
+        }}
+      />
+
       {/* Desktop Space */}
       <div
         style={{
           flex: 1,
           position: 'relative',
-          padding: '24px',
+          padding: '28px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'flex-start',
           gap: '24px'
         }}
       >
-        {/* 1. App Icon: Mail Client */}
+        {/* 1. App Icon: Mail Client (Golden Amber Theme) */}
         <div
           onClick={() => handleLaunchApp('email')}
           style={{
@@ -79,29 +107,30 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
             flexDirection: 'column',
             alignItems: 'center',
             gap: '6px',
-            width: '88px',
+            width: '92px',
             cursor: 'pointer',
             padding: '8px',
-            borderRadius: '4px',
-            background: activeWindow === 'email' ? 'rgba(0, 210, 230, 0.15)' : 'transparent',
-            border: activeWindow === 'email' ? '1px solid var(--cyan-dark)' : '1px solid transparent'
+            borderRadius: '6px',
+            background: activeWindow === 'email' ? 'rgba(248, 184, 57, 0.25)' : 'rgba(20, 16, 30, 0.5)',
+            border: activeWindow === 'email' ? '1px solid var(--sunset-gold)' : '1px solid rgba(255,255,255,0.08)',
+            boxShadow: activeWindow === 'email' ? '0 0 16px rgba(248, 184, 57, 0.4)' : 'none'
           }}
         >
           <div style={{ position: 'relative' }}>
             <div
               style={{
-                width: '48px',
-                height: '48px',
-                backgroundColor: '#131e30',
-                border: '2px solid var(--cyan-bright)',
-                borderRadius: '6px',
+                width: '50px',
+                height: '50px',
+                backgroundColor: '#261b12',
+                border: '2px solid var(--sunset-gold)',
+                borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 0 10px rgba(0, 210, 230, 0.3)'
+                boxShadow: '0 0 14px rgba(248, 184, 57, 0.45)'
               }}
             >
-              <Mail size={24} color="var(--cyan-bright)" />
+              <Mail size={26} color="var(--sunset-gold)" />
             </div>
             {currentMission === 'MISSION-001' && (
               <div
@@ -114,18 +143,18 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
                   backgroundColor: 'var(--neon-red)',
                   borderRadius: '50%',
                   border: '2px solid #070c14',
-                  boxShadow: '0 0 6px var(--neon-red)'
+                  boxShadow: '0 0 8px var(--neon-red)'
                 }}
                 className="animate-blink"
               />
             )}
           </div>
-          <span style={{ fontSize: '11px', color: '#fff', textAlign: 'center', textShadow: '0 1px 2px #000' }}>
-            Mail Client
+          <span style={{ fontSize: '11px', color: '#fff', textAlign: 'center', fontWeight: 'bold', textShadow: '0 1px 3px #000' }}>
+            NexaMail
           </span>
         </div>
 
-        {/* 2. App Icon: IAM Console */}
+        {/* 2. App Icon: IAM Console (Electric Violet & Amber Theme) */}
         <div
           onClick={() => handleLaunchApp('iam')}
           style={{
@@ -133,29 +162,30 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
             flexDirection: 'column',
             alignItems: 'center',
             gap: '6px',
-            width: '88px',
+            width: '92px',
             cursor: 'pointer',
             padding: '8px',
-            borderRadius: '4px',
-            background: activeWindow === 'iam' ? 'rgba(245, 170, 40, 0.2)' : 'transparent',
-            border: activeWindow === 'iam' ? '1px solid var(--neon-amber)' : '1px solid transparent'
+            borderRadius: '6px',
+            background: activeWindow === 'iam' ? 'rgba(181, 96, 255, 0.25)' : 'rgba(20, 16, 30, 0.5)',
+            border: activeWindow === 'iam' ? '1px solid #c07aff' : '1px solid rgba(255,255,255,0.08)',
+            boxShadow: activeWindow === 'iam' ? '0 0 16px rgba(181, 96, 255, 0.4)' : 'none'
           }}
         >
           <div style={{ position: 'relative' }}>
             <div
               style={{
-                width: '48px',
-                height: '48px',
-                backgroundColor: '#161c28',
-                border: '2px solid var(--neon-amber)',
-                borderRadius: '6px',
+                width: '50px',
+                height: '50px',
+                backgroundColor: '#201235',
+                border: '2px solid #c07aff',
+                borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 0 10px rgba(245, 170, 40, 0.4)'
+                boxShadow: '0 0 14px rgba(181, 96, 255, 0.45)'
               }}
             >
-              <KeyRound size={24} color="var(--neon-amber)" />
+              <KeyRound size={26} color="#e0b0ff" />
             </div>
             {currentMission === 'MISSION-002' && (
               <div
@@ -168,18 +198,18 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
                   backgroundColor: 'var(--neon-red)',
                   borderRadius: '50%',
                   border: '2px solid #070c14',
-                  boxShadow: '0 0 6px var(--neon-red)'
+                  boxShadow: '0 0 8px var(--neon-red)'
                 }}
                 className="animate-blink"
               />
             )}
           </div>
-          <span style={{ fontSize: '11px', color: 'var(--neon-amber)', textAlign: 'center', fontWeight: 'bold' }}>
+          <span style={{ fontSize: '11px', color: '#e0b0ff', textAlign: 'center', fontWeight: 'bold', textShadow: '0 1px 3px #000' }}>
             IAM Console
           </span>
         </div>
 
-        {/* 3. App Icon: Web Browser (Active in Mission 3) */}
+        {/* 3. App Icon: Web Browser (Ocean Turquoise Theme) */}
         <div
           onClick={() => handleLaunchApp('browser')}
           style={{
@@ -187,29 +217,30 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
             flexDirection: 'column',
             alignItems: 'center',
             gap: '6px',
-            width: '88px',
+            width: '92px',
             cursor: 'pointer',
             padding: '8px',
-            borderRadius: '4px',
-            background: activeWindow === 'browser' ? 'rgba(0, 210, 230, 0.2)' : 'transparent',
-            border: activeWindow === 'browser' ? '1px solid var(--cyan-bright)' : '1px solid transparent'
+            borderRadius: '6px',
+            background: activeWindow === 'browser' ? 'rgba(0, 210, 230, 0.25)' : 'rgba(20, 16, 30, 0.5)',
+            border: activeWindow === 'browser' ? '1px solid var(--cyan-bright)' : '1px solid rgba(255,255,255,0.08)',
+            boxShadow: activeWindow === 'browser' ? '0 0 16px rgba(0, 210, 230, 0.4)' : 'none'
           }}
         >
           <div style={{ position: 'relative' }}>
             <div
               style={{
-                width: '48px',
-                height: '48px',
-                backgroundColor: '#131e30',
+                width: '50px',
+                height: '50px',
+                backgroundColor: '#0c2430',
                 border: '2px solid var(--cyan-bright)',
-                borderRadius: '6px',
+                borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 0 10px rgba(0, 210, 230, 0.3)'
+                boxShadow: '0 0 14px rgba(0, 210, 230, 0.45)'
               }}
             >
-              <Globe size={24} color="var(--cyan-bright)" />
+              <Globe size={26} color="var(--cyan-bright)" />
             </div>
             {currentMission === 'MISSION-003' && (
               <div
@@ -222,18 +253,18 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
                   backgroundColor: 'var(--neon-red)',
                   borderRadius: '50%',
                   border: '2px solid #070c14',
-                  boxShadow: '0 0 6px var(--neon-red)'
+                  boxShadow: '0 0 8px var(--neon-red)'
                 }}
                 className="animate-blink"
               />
             )}
           </div>
-          <span style={{ fontSize: '11px', color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>
-            Web Browser
+          <span style={{ fontSize: '11px', color: '#a0f0ff', textAlign: 'center', fontWeight: 'bold', textShadow: '0 1px 3px #000' }}>
+            NexaBrowser
           </span>
         </div>
 
-        {/* 4. App Icon: Files */}
+        {/* 4. App Icon: Files (Warm Terracotta Theme) */}
         <div
           onClick={() => handleLaunchApp('files')}
           style={{
@@ -241,27 +272,32 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
             flexDirection: 'column',
             alignItems: 'center',
             gap: '6px',
-            width: '88px',
+            width: '92px',
             cursor: 'pointer',
             padding: '8px',
-            borderRadius: '4px'
+            borderRadius: '6px',
+            background: 'rgba(20, 16, 30, 0.5)',
+            border: '1px solid rgba(255,255,255,0.08)'
           }}
         >
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              backgroundColor: '#131e30',
-              border: '2px solid #334460',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <FolderLock size={24} color="#7890b0" />
+          <div style={{ position: 'relative' }}>
+            <div
+              style={{
+                width: '50px',
+                height: '50px',
+                backgroundColor: '#2a1a12',
+                border: '2px solid #f28526',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 0 10px rgba(242, 134, 40, 0.35)'
+              }}
+            >
+              <FolderLock size={26} color="#f28526" />
+            </div>
           </div>
-          <span style={{ fontSize: '11px', color: '#8fa4be', textAlign: 'center' }}>
+          <span style={{ fontSize: '11px', color: '#ffcc99', textAlign: 'center', fontWeight: 'bold', textShadow: '0 1px 3px #000' }}>
             Secure Files
           </span>
         </div>
