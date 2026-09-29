@@ -1145,7 +1145,7 @@ function generateManagerPortrait() {
       c.setPixel(x, y, r, g, b, 255);
     }
   }
-  // Subtle vertical executive blinds / window lines in background
+  // Subtle vertical blinds in background
   for (let y = 0; y < 64; y++) {
     c.setPixel(14, y, 16, 18, 30, 255);
     c.setPixel(26, y, 16, 18, 30, 255);
@@ -1154,45 +1154,50 @@ function generateManagerPortrait() {
   c.strokeRect(0, 0, 64, 64, 34, 42, 64, 255);
 
   // --- SHOULDERS & SUIT ---
-  c.fillRect(10, 44, 44, 20, ...PALETTE.clothExecutiveNavy);
-  c.fillRect(12, 42, 40, 2, ...PALETTE.clothExecutiveNavy);
-  c.fillRect(16, 40, 32, 2, ...PALETTE.clothExecutiveNavy);
-  c.fillRect(10, 48, 6, 16, 16, 26, 48, 255);
-  c.fillRect(48, 48, 6, 16, 16, 26, 48, 255);
-  c.fillRect(18, 44, 4, 18, 44, 68, 110, 255);
-  c.fillRect(42, 44, 4, 18, 44, 68, 110, 255);
+  c.fillRect(8, 42, 48, 22, ...PALETTE.clothExecutiveNavy);
+  c.fillRect(12, 39, 40, 3, ...PALETTE.clothExecutiveNavy);
+  c.fillRect(16, 37, 32, 2, ...PALETTE.clothExecutiveNavy);
 
-  // White dress shirt collar
-  c.fillRect(24, 38, 16, 12, ...PALETTE.clothWhite);
-  c.fillRect(26, 36, 12, 2, ...PALETTE.clothWhite);
-  c.fillRect(23, 40, 3, 6, 210, 220, 235, 255);
-  c.fillRect(38, 40, 3, 6, 210, 220, 235, 255);
+  // Shoulder creases / shadows
+  c.fillRect(8, 46, 6, 18, 16, 26, 48, 255);
+  c.fillRect(50, 46, 6, 18, 16, 26, 48, 255);
+
+  // Lapels
+  c.fillRect(18, 40, 5, 22, 38, 64, 105, 255);
+  c.fillRect(41, 40, 5, 22, 38, 64, 105, 255);
+
+  // Crisp white shirt collar
+  c.fillRect(23, 35, 18, 10, ...PALETTE.clothWhite);
+  c.fillRect(22, 38, 3, 5, 205, 215, 230, 255);
+  c.fillRect(39, 38, 3, 5, 205, 215, 230, 255);
 
   // Crimson silk tie
-  c.fillRect(29, 41, 6, 5, ...PALETTE.clothCrimson);
-  c.fillRect(29, 41, 6, 1, 140, 24, 38, 255);
-  c.fillRect(28, 46, 8, 18, ...PALETTE.clothCrimson);
-  c.fillRect(28, 46, 2, 18, 160, 28, 44, 255);
-  c.fillRect(34, 46, 2, 18, 225, 58, 78, 255);
+  c.fillRect(29, 38, 6, 4, ...PALETTE.clothCrimson);
+  c.fillRect(29, 38, 6, 1, 135, 22, 36, 255); // Knot shadow
+  c.fillRect(28, 42, 8, 22, ...PALETTE.clothCrimson);
+  c.fillRect(28, 42, 2, 22, 155, 26, 42, 255);
+  c.fillRect(34, 42, 2, 22, 225, 58, 78, 255);
 
   // Golden tie clip
-  c.fillRect(27, 52, 10, 2, ...PALETTE.sunsetGold);
-  c.setPixel(31, 52, ...PALETTE.sunGlare);
-  c.fillRect(27, 53, 10, 1, ...PALETTE.honeyOakShadow);
+  c.fillRect(27, 49, 10, 2, ...PALETTE.sunsetGold);
+  c.setPixel(31, 49, ...PALETTE.sunGlare);
+  c.fillRect(27, 50, 10, 1, ...PALETTE.honeyOakShadow);
 
-  // Pocket square on chest
-  c.fillRect(14, 52, 5, 2, ...PALETTE.clothWhite);
-  c.setPixel(16, 51, ...PALETTE.clothWhite);
+  // Pocket square
+  c.fillRect(13, 50, 5, 2, ...PALETTE.clothWhite);
+  c.setPixel(15, 49, ...PALETTE.clothWhite);
 
   // --- NECK & JAW ---
-  c.fillRect(26, 31, 12, 10, ...PALETTE.skinMid);
-  c.fillRect(26, 31, 12, 4, ...PALETTE.skinMidShadow);
-  c.fillRect(24, 31, 16, 5, ...PALETTE.skinMid);
-  c.fillRect(26, 35, 12, 3, ...PALETTE.skinMid);
-  c.fillRect(28, 37, 8, 2, ...PALETTE.skinMid);
+  c.fillRect(26, 29, 12, 8, ...PALETTE.skinMid);
+  c.fillRect(26, 29, 12, 3, ...PALETTE.skinMidShadow);
+
+  // Masculine jawline
+  c.fillRect(23, 28, 18, 5, ...PALETTE.skinMid);
+  c.fillRect(25, 32, 14, 3, ...PALETTE.skinMid);
+  c.fillRect(27, 34, 10, 2, ...PALETTE.skinMid);
 
   // Stubble
-  for (let sy = 33; sy <= 37; sy++) {
+  for (let sy = 31; sy <= 34; sy++) {
     for (let sx = 26; sx <= 37; sx += 2) {
       if ((sx + sy) % 2 === 0) {
         c.setPixel(sx, sy, 175, 130, 100, 255);
@@ -1201,59 +1206,56 @@ function generateManagerPortrait() {
   }
 
   // --- FACE ---
-  c.fillRect(20, 16, 24, 16, ...PALETTE.skinMid);
-  c.fillRect(18, 21, 2, 8, ...PALETTE.skinMidShadow);
-  c.fillRect(44, 21, 2, 8, ...PALETTE.skinLight);
-  c.fillRect(42, 18, 2, 14, ...PALETTE.skinLight);
-  c.fillRect(43, 20, 1, 10, ...PALETTE.sunGlare);
+  c.fillRect(20, 15, 24, 15, ...PALETTE.skinMid);
+  c.fillRect(18, 19, 2, 8, ...PALETTE.skinMidShadow);
+  c.fillRect(44, 19, 2, 8, ...PALETTE.skinLight);
+  c.fillRect(42, 17, 2, 13, ...PALETTE.skinLight);
+  c.fillRect(43, 19, 1, 9, ...PALETTE.sunGlare);
 
   // Mouth
-  c.fillRect(28, 33, 8, 2, 150, 92, 78, 255);
-  c.setPixel(28, 34, 130, 75, 65, 255);
-  c.setPixel(35, 34, 130, 75, 65, 255);
+  c.fillRect(28, 31, 8, 2, 150, 92, 78, 255);
+  c.setPixel(28, 32, 130, 75, 65, 255);
+  c.setPixel(35, 32, 130, 75, 65, 255);
 
   // Nose
-  c.fillRect(31, 22, 2, 9, ...PALETTE.skinLight);
-  c.fillRect(33, 27, 2, 4, ...PALETTE.skinMidShadow);
-  c.fillRect(30, 30, 4, 1, 170, 118, 88, 255);
+  c.fillRect(31, 20, 2, 9, ...PALETTE.skinLight);
+  c.fillRect(33, 25, 2, 4, ...PALETTE.skinMidShadow);
+  c.fillRect(30, 28, 4, 1, 170, 118, 88, 255);
 
   // Eyebrows
-  c.fillRect(22, 20, 7, 2, 110, 42, 22, 255);
-  c.fillRect(35, 20, 7, 2, 110, 42, 22, 255);
-  c.setPixel(21, 21, 110, 42, 22, 255);
-  c.setPixel(42, 21, 110, 42, 22, 255);
+  c.fillRect(22, 18, 7, 2, 110, 42, 22, 255);
+  c.fillRect(35, 18, 7, 2, 110, 42, 22, 255);
 
   // Eyes
-  c.fillRect(23, 23, 5, 3, ...PALETTE.white);
-  c.fillRect(25, 23, 2, 3, 72, 118, 168, 255);
-  c.fillRect(26, 23, 1, 2, 20, 30, 45, 255);
-  c.setPixel(25, 23, ...PALETTE.white);
-  c.fillRect(22, 22, 7, 1, 40, 24, 18, 255);
+  c.fillRect(23, 21, 5, 3, ...PALETTE.white);
+  c.fillRect(25, 21, 2, 3, 72, 118, 168, 255);
+  c.fillRect(26, 21, 1, 2, 20, 30, 45, 255);
+  c.setPixel(25, 21, ...PALETTE.white);
+  c.fillRect(22, 20, 7, 1, 40, 24, 18, 255);
 
-  c.fillRect(36, 23, 5, 3, ...PALETTE.white);
-  c.fillRect(37, 23, 2, 3, 72, 118, 168, 255);
-  c.fillRect(38, 23, 1, 2, 20, 30, 45, 255);
-  c.setPixel(37, 23, ...PALETTE.white);
-  c.fillRect(35, 22, 7, 1, 40, 24, 18, 255);
+  c.fillRect(36, 21, 5, 3, ...PALETTE.white);
+  c.fillRect(37, 21, 2, 3, 72, 118, 168, 255);
+  c.fillRect(38, 21, 1, 2, 20, 30, 45, 255);
+  c.setPixel(37, 21, ...PALETTE.white);
+  c.fillRect(35, 20, 7, 1, 40, 24, 18, 255);
 
   // --- HAIR ---
-  c.fillRect(19, 10, 26, 7, ...PALETTE.hairAuburn);
-  c.fillRect(21, 7, 22, 4, ...PALETTE.hairAuburn);
-  c.fillRect(24, 5, 16, 3, ...PALETTE.hairAuburn);
-  c.fillRect(17, 13, 4, 9, ...PALETTE.hairAuburn);
-  c.fillRect(43, 13, 4, 9, ...PALETTE.hairAuburn);
+  c.fillRect(19, 9, 26, 7, ...PALETTE.hairAuburn);
+  c.fillRect(21, 6, 22, 4, ...PALETTE.hairAuburn);
+  c.fillRect(24, 4, 16, 3, ...PALETTE.hairAuburn);
+  c.fillRect(17, 12, 4, 9, ...PALETTE.hairAuburn);
+  c.fillRect(43, 12, 4, 9, ...PALETTE.hairAuburn);
 
-  c.fillRect(19, 12, 4, 6, 105, 38, 20, 255);
-  c.fillRect(23, 15, 6, 2, 105, 38, 20, 255);
-  c.fillRect(26, 8, 14, 3, 218, 105, 52, 255);
-  c.fillRect(28, 6, 10, 2, ...PALETTE.sunsetGold);
-  c.fillRect(38, 10, 6, 5, ...PALETTE.sunsetGold);
+  c.fillRect(19, 11, 4, 6, 105, 38, 20, 255);
+  c.fillRect(23, 14, 6, 2, 105, 38, 20, 255);
+  c.fillRect(26, 7, 14, 3, 218, 105, 52, 255);
+  c.fillRect(28, 5, 10, 2, ...PALETTE.sunsetGold);
+  c.fillRect(38, 9, 6, 5, ...PALETTE.sunsetGold);
 
-  c.setPixel(18, 20, 180, 185, 198, 255);
-  c.setPixel(19, 21, 180, 185, 198, 255);
-  c.setPixel(18, 22, 180, 185, 198, 255);
-  c.setPixel(44, 20, 220, 215, 228, 255);
-  c.setPixel(45, 21, 220, 215, 228, 255);
+  c.setPixel(18, 19, 180, 185, 198, 255);
+  c.setPixel(19, 20, 180, 185, 198, 255);
+  c.setPixel(44, 19, 220, 215, 228, 255);
+  c.setPixel(45, 20, 220, 215, 228, 255);
 
   saveAsset('portraits/manager.png', c);
 }
@@ -1279,213 +1281,227 @@ function generateReceptionistPortrait() {
       }
     }
   };
-  drawBokeh(12, 16, 7, 65, 32, 68, 255);
-  drawBokeh(52, 12, 9, 78, 38, 72, 255);
-  drawBokeh(50, 36, 6, 72, 34, 64, 255);
+  drawBokeh(12, 14, 7, 65, 32, 68, 255);
+  drawBokeh(52, 10, 9, 78, 38, 72, 255);
   c.strokeRect(0, 0, 64, 64, 68, 38, 72, 255);
 
-  // Ponytail sweeping down
-  c.fillRect(9, 16, 8, 32, ...PALETTE.hairGoldenBlonde);
-  c.fillRect(8, 22, 6, 24, 186, 140, 52, 255);
-  c.fillRect(11, 20, 4, 26, ...PALETTE.sunsetWarmYellow);
-  c.fillRect(10, 44, 5, 8, ...PALETTE.hairGoldenBlonde);
-  c.fillRect(14, 14, 6, 5, ...PALETTE.terracottaLight);
-  c.fillRect(15, 15, 4, 3, ...PALETTE.terracottaDark);
+  // Ponytail cascading down left side
+  c.fillRect(9, 14, 8, 36, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(8, 18, 6, 30, 186, 140, 52, 255);
+  c.fillRect(11, 16, 4, 30, ...PALETTE.sunsetWarmYellow);
+  c.fillRect(14, 12, 6, 5, ...PALETTE.terracottaLight);
+  c.fillRect(15, 13, 4, 3, ...PALETTE.terracottaDark);
 
-  // Shoulders & Coral Blouse
-  c.fillRect(14, 44, 36, 20, ...PALETTE.terracottaLight);
-  c.fillRect(16, 42, 32, 2, ...PALETTE.terracottaLight);
-  c.fillRect(19, 40, 26, 2, ...PALETTE.terracottaLight);
-  c.fillRect(14, 48, 6, 16, ...PALETTE.terracottaMid);
-  c.fillRect(44, 48, 6, 16, ...PALETTE.terracottaMid);
-  c.fillRect(22, 46, 2, 18, ...PALETTE.terracottaDark);
-  c.fillRect(40, 46, 2, 18, ...PALETTE.terracottaDark);
+  // --- SHOULDERS & CORAL BLOUSE ---
+  c.fillRect(10, 38, 44, 26, ...PALETTE.terracottaLight);
+  c.fillRect(14, 35, 36, 4, ...PALETTE.terracottaLight);
+  c.fillRect(18, 33, 28, 3, ...PALETTE.terracottaLight);
 
-  // Collar & Neck
-  c.fillRect(27, 40, 10, 6, ...PALETTE.skinLight);
-  c.fillRect(29, 46, 6, 4, ...PALETTE.skinLight);
-  c.fillRect(31, 50, 2, 2, ...PALETTE.skinLightShadow);
+  // Blouse shadow folds
+  c.fillRect(10, 42, 6, 22, ...PALETTE.terracottaMid);
+  c.fillRect(48, 42, 6, 22, ...PALETTE.terracottaMid);
+  c.fillRect(18, 38, 3, 26, ...PALETTE.terracottaDark);
+  c.fillRect(43, 38, 3, 26, ...PALETTE.terracottaDark);
 
-  // Gold pendant necklace
-  c.fillRect(29, 43, 6, 1, ...PALETTE.sunsetGold);
-  c.fillRect(30, 44, 4, 1, ...PALETTE.sunsetGold);
-  c.setPixel(31, 48, ...PALETTE.sunsetGold);
-  c.setPixel(32, 48, ...PALETTE.sunGlare);
+  // Delicate V-neck collar & skin
+  c.fillRect(28, 34, 8, 4, ...PALETTE.skinLight);
+  c.fillRect(30, 38, 4, 3, ...PALETTE.skinLight);
+  c.fillRect(31, 41, 2, 1, ...PALETTE.skinLightShadow);
 
-  // Neck & Jaw
-  c.fillRect(27, 31, 10, 10, ...PALETTE.skinLight);
-  c.fillRect(27, 31, 10, 3, ...PALETTE.skinLightShadow);
-  c.fillRect(24, 30, 16, 4, ...PALETTE.skinLight);
-  c.fillRect(26, 34, 12, 3, ...PALETTE.skinLight);
-  c.fillRect(28, 36, 8, 2, ...PALETTE.skinLight);
+  // Dainty gold pendant necklace
+  c.fillRect(29, 37, 6, 1, ...PALETTE.sunsetGold);
+  c.setPixel(31, 40, ...PALETTE.sunsetGold);
+  c.setPixel(32, 40, ...PALETTE.sunGlare);
 
-  // Face
-  c.fillRect(21, 16, 22, 15, ...PALETTE.skinLight);
-  c.fillRect(22, 27, 4, 3, 255, 185, 178, 255);
-  c.fillRect(38, 27, 4, 3, 255, 185, 178, 255);
+  // --- NECK & JAW ---
+  c.fillRect(27, 28, 10, 7, ...PALETTE.skinLight);
+  c.fillRect(27, 28, 10, 3, ...PALETTE.skinLightShadow); // Chin shadow
+  c.fillRect(24, 27, 16, 4, ...PALETTE.skinLight);
+  c.fillRect(26, 31, 12, 3, ...PALETTE.skinLight);
+  c.fillRect(28, 33, 8, 2, ...PALETTE.skinLight);
 
-  // Smile
-  c.fillRect(28, 33, 8, 2, 225, 110, 124, 255);
-  c.setPixel(27, 32, 210, 95, 110, 255);
-  c.setPixel(36, 32, 210, 95, 110, 255);
-  c.fillRect(30, 33, 4, 1, ...PALETTE.white);
+  // --- FACE ---
+  c.fillRect(21, 14, 22, 14, ...PALETTE.skinLight);
+  // Soft blush on cheekbones
+  c.fillRect(22, 24, 4, 3, 255, 185, 178, 255);
+  c.fillRect(38, 24, 4, 3, 255, 185, 178, 255);
 
-  // Nose
-  c.setPixel(31, 29, 230, 170, 140, 255);
-  c.setPixel(32, 29, 230, 170, 140, 255);
-  c.setPixel(31, 30, 215, 150, 125, 255);
+  // Welcoming warm smile
+  c.fillRect(28, 30, 8, 2, 225, 110, 124, 255);
+  c.setPixel(27, 29, 210, 95, 110, 255);
+  c.setPixel(36, 29, 210, 95, 110, 255);
+  c.fillRect(30, 30, 4, 1, ...PALETTE.white);
+
+  // Delicate nose
+  c.setPixel(31, 26, 230, 170, 140, 255);
+  c.setPixel(32, 26, 230, 170, 140, 255);
+  c.setPixel(31, 27, 215, 150, 125, 255);
 
   // Eyebrows
-  c.fillRect(23, 20, 6, 1, 190, 145, 60, 255);
-  c.fillRect(35, 20, 6, 1, 190, 145, 60, 255);
-  c.setPixel(28, 21, 190, 145, 60, 255);
-  c.setPixel(35, 21, 190, 145, 60, 255);
+  c.fillRect(23, 17, 6, 1, 190, 145, 60, 255);
+  c.fillRect(35, 17, 6, 1, 190, 145, 60, 255);
 
-  // Eyes
-  c.fillRect(23, 23, 5, 3, ...PALETTE.white);
-  c.fillRect(25, 23, 2, 3, 68, 164, 112, 255);
-  c.fillRect(26, 23, 1, 2, 20, 45, 30, 255);
-  c.setPixel(25, 23, ...PALETTE.white);
-  c.fillRect(22, 22, 6, 1, 60, 36, 28, 255);
+  // Eyes (Hazel emerald)
+  c.fillRect(23, 20, 5, 3, ...PALETTE.white);
+  c.fillRect(25, 20, 2, 3, 68, 164, 112, 255);
+  c.fillRect(26, 20, 1, 2, 20, 45, 30, 255);
+  c.setPixel(25, 20, ...PALETTE.white);
+  c.fillRect(22, 19, 6, 1, 60, 36, 28, 255);
 
-  c.fillRect(36, 23, 5, 3, ...PALETTE.white);
-  c.fillRect(37, 23, 2, 3, 68, 164, 112, 255);
-  c.fillRect(38, 23, 1, 2, 20, 45, 30, 255);
-  c.setPixel(37, 23, ...PALETTE.white);
-  c.fillRect(36, 22, 6, 1, 60, 36, 28, 255);
+  c.fillRect(36, 20, 5, 3, ...PALETTE.white);
+  c.fillRect(37, 20, 2, 3, 68, 164, 112, 255);
+  c.fillRect(38, 20, 1, 2, 20, 45, 30, 255);
+  c.setPixel(37, 20, ...PALETTE.white);
+  c.fillRect(36, 19, 6, 1, 60, 36, 28, 255);
 
-  // Hair
-  c.fillRect(18, 8, 28, 8, ...PALETTE.hairGoldenBlonde);
-  c.fillRect(21, 5, 22, 4, ...PALETTE.hairGoldenBlonde);
-  c.fillRect(18, 14, 4, 12, ...PALETTE.hairGoldenBlonde);
-  c.fillRect(42, 14, 4, 12, ...PALETTE.hairGoldenBlonde);
-  c.fillRect(22, 15, 12, 4, ...PALETTE.hairGoldenBlonde);
-  c.fillRect(33, 15, 8, 2, ...PALETTE.hairGoldenBlonde);
-  c.fillRect(24, 18, 8, 2, ...PALETTE.hairGoldenBlonde);
-  c.fillRect(24, 6, 16, 2, ...PALETTE.sunsetWarmYellow);
-  c.fillRect(22, 10, 18, 2, ...PALETTE.sunsetWarmYellow);
-  c.fillRect(23, 16, 8, 1, ...PALETTE.sunGlare);
+  // --- GOLDEN BLONDE HAIR & BANGS ---
+  c.fillRect(18, 6, 28, 8, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(21, 4, 22, 3, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(18, 12, 4, 12, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(42, 12, 4, 12, ...PALETTE.hairGoldenBlonde);
 
-  // Headset & mic
-  c.fillRect(27, 5, 16, 1, ...PALETTE.obsidian);
-  c.fillRect(42, 6, 2, 14, ...PALETTE.obsidian);
-  c.fillRect(43, 20, 3, 6, ...PALETTE.obsidian);
-  c.fillRect(44, 21, 2, 4, ...PALETTE.slateMid);
-  c.fillRect(42, 27, 2, 3, ...PALETTE.sunsetGold);
-  c.setPixel(43, 28, ...PALETTE.sunGlare);
-  c.fillRect(42, 26, 2, 2, ...PALETTE.obsidian);
-  c.fillRect(39, 29, 3, 2, ...PALETTE.obsidian);
-  c.fillRect(36, 32, 3, 2, ...PALETTE.obsidian);
-  c.fillRect(33, 34, 3, 2, ...PALETTE.obsidian);
-  c.setPixel(32, 34, ...PALETTE.cyberCyan);
-  c.setPixel(32, 35, ...PALETTE.cyberCyanLight);
+  // Swept bangs
+  c.fillRect(22, 12, 12, 4, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(33, 12, 8, 2, ...PALETTE.hairGoldenBlonde);
+  c.fillRect(24, 15, 8, 2, ...PALETTE.hairGoldenBlonde);
+
+  // Sunlit shine
+  c.fillRect(24, 5, 16, 2, ...PALETTE.sunsetWarmYellow);
+  c.fillRect(22, 8, 18, 2, ...PALETTE.sunsetWarmYellow);
+  c.fillRect(23, 13, 8, 1, ...PALETTE.sunGlare);
+
+  // Headset & boom mic
+  c.fillRect(27, 4, 16, 1, ...PALETTE.obsidian);
+  c.fillRect(42, 5, 2, 13, ...PALETTE.obsidian);
+  c.fillRect(43, 18, 3, 5, ...PALETTE.obsidian);
+  c.fillRect(44, 19, 2, 3, ...PALETTE.slateMid);
+
+  // Gold hoop earring
+  c.fillRect(42, 24, 2, 3, ...PALETTE.sunsetGold);
+  c.setPixel(43, 25, ...PALETTE.sunGlare);
+
+  // Sleek mic boom
+  c.fillRect(41, 24, 2, 2, ...PALETTE.obsidian);
+  c.fillRect(38, 26, 3, 2, ...PALETTE.obsidian);
+  c.fillRect(35, 28, 3, 2, ...PALETTE.obsidian);
+  c.fillRect(33, 30, 2, 2, ...PALETTE.obsidian);
+  // Active cyan LED
+  c.setPixel(32, 30, ...PALETTE.cyberCyan);
+  c.setPixel(32, 31, ...PALETTE.cyberCyanLight);
 
   saveAsset('portraits/receptionist.png', c);
 }
 
 function generateITTechPortrait() {
   const c = new PixelCanvas(64, 64);
-  c.fillRect(0, 0, 64, 64, 16, 20, 30, 255);
-  c.fillRect(4, 4, 10, 56, 24, 30, 44, 255);
-  c.fillRect(50, 4, 10, 56, 24, 30, 44, 255);
+  c.fillRect(0, 0, 64, 64, 14, 18, 28, 255);
 
+  // Clean Server Rack silhouettes with organized vertical LED columns
+  c.fillRect(3, 4, 12, 56, 22, 28, 40, 255);
+  c.strokeRect(3, 4, 12, 56, 32, 42, 60, 255);
+  c.fillRect(49, 4, 12, 56, 22, 28, 40, 255);
+  c.strokeRect(49, 4, 12, 56, 32, 42, 60, 255);
+
+  // Status indicator lights in neat rack columns
   const drawLed = (x, y, color) => {
-    c.fillRect(x, y, 2, 1, ...color);
+    c.fillRect(x, y, 3, 2, ...color);
   };
   drawLed(7, 10, PALETTE.cyberCyan);
-  drawLed(7, 18, PALETTE.neonGreen);
-  drawLed(7, 26, PALETTE.neonAmber);
+  drawLed(7, 16, PALETTE.neonGreen);
+  drawLed(7, 22, PALETTE.neonGreen);
+  drawLed(7, 28, PALETTE.neonAmber);
   drawLed(7, 34, PALETTE.cyberCyan);
-  drawLed(10, 14, PALETTE.neonGreen);
-  drawLed(10, 22, PALETTE.neonGreen);
-  drawLed(53, 10, PALETTE.neonGreen);
-  drawLed(53, 18, PALETTE.cyberCyan);
-  drawLed(53, 28, PALETTE.neonAmber);
-  drawLed(56, 14, PALETTE.cyberCyan);
-  drawLed(56, 24, PALETTE.neonGreen);
-  c.strokeRect(0, 0, 64, 64, 30, 40, 60, 255);
 
-  // Shoulders & Mustard Polo
-  c.fillRect(10, 44, 44, 20, ...PALETTE.clothMustard);
-  c.fillRect(12, 42, 40, 2, ...PALETTE.clothMustard);
-  c.fillRect(16, 40, 32, 2, ...PALETTE.clothMustard);
-  c.fillRect(10, 48, 6, 16, 162, 110, 18, 255);
-  c.fillRect(48, 48, 6, 16, 162, 110, 18, 255);
+  drawLed(54, 10, PALETTE.neonGreen);
+  drawLed(54, 16, PALETTE.cyberCyan);
+  drawLed(54, 22, PALETTE.neonGreen);
+  drawLed(54, 28, PALETTE.neonAmber);
+  drawLed(54, 34, PALETTE.neonGreen);
 
-  c.fillRect(22, 38, 20, 5, ...PALETTE.darkEspresso);
-  c.fillRect(20, 41, 5, 6, ...PALETTE.darkEspresso);
-  c.fillRect(39, 41, 5, 6, ...PALETTE.darkEspresso);
-  c.fillRect(30, 43, 4, 12, ...PALETTE.darkEspresso);
-  c.setPixel(31, 46, ...PALETTE.clothWhite);
-  c.setPixel(31, 51, ...PALETTE.clothWhite);
+  c.strokeRect(0, 0, 64, 64, 28, 38, 56, 255);
+
+  // --- SHOULDERS & MUSTARD POLO ---
+  c.fillRect(8, 40, 48, 24, ...PALETTE.clothMustard);
+  c.fillRect(12, 37, 40, 3, ...PALETTE.clothMustard);
+  c.fillRect(16, 35, 32, 2, ...PALETTE.clothMustard);
+
+  c.fillRect(8, 45, 6, 19, 162, 110, 18, 255);
+  c.fillRect(50, 45, 6, 19, 162, 110, 18, 255);
+
+  // Dark espresso collar
+  c.fillRect(22, 34, 20, 5, ...PALETTE.darkEspresso);
+  c.fillRect(20, 37, 5, 5, ...PALETTE.darkEspresso);
+  c.fillRect(39, 37, 5, 5, ...PALETTE.darkEspresso);
+  c.fillRect(30, 39, 4, 12, ...PALETTE.darkEspresso);
+  c.setPixel(31, 42, ...PALETTE.clothWhite);
+  c.setPixel(31, 47, ...PALETTE.clothWhite);
 
   // Lanyard & Badge
-  c.fillRect(26, 40, 2, 16, 18, 18, 24, 255);
-  c.fillRect(36, 40, 2, 16, 18, 18, 24, 255);
-  c.fillRect(29, 54, 6, 2, ...PALETTE.slateHighlight);
-  c.fillRect(28, 56, 8, 8, ...PALETTE.obsidian);
-  c.fillRect(29, 57, 6, 3, ...PALETTE.cyberCyan);
-  c.fillRect(30, 61, 4, 2, ...PALETTE.clothWhite);
+  c.fillRect(26, 36, 2, 18, 18, 18, 24, 255);
+  c.fillRect(36, 36, 2, 18, 18, 18, 24, 255);
+  c.fillRect(29, 52, 6, 2, ...PALETTE.slateHighlight);
+  c.fillRect(28, 54, 8, 9, ...PALETTE.obsidian);
+  c.fillRect(29, 55, 6, 3, ...PALETTE.cyberCyan);
+  c.fillRect(30, 59, 4, 2, ...PALETTE.clothWhite);
 
-  // Neck & Jaw
-  c.fillRect(26, 31, 12, 10, ...PALETTE.skinDark);
-  c.fillRect(26, 31, 12, 4, ...PALETTE.skinDarkShadow);
-  c.fillRect(23, 30, 18, 5, ...PALETTE.skinDark);
-  c.fillRect(25, 34, 14, 3, ...PALETTE.skinDark);
-  c.fillRect(27, 36, 10, 2, ...PALETTE.skinDark);
+  // --- NECK & JAW ---
+  c.fillRect(26, 28, 12, 8, ...PALETTE.skinDark);
+  c.fillRect(26, 28, 12, 3, ...PALETTE.skinDarkShadow);
+  c.fillRect(23, 27, 18, 5, ...PALETTE.skinDark);
+  c.fillRect(25, 31, 14, 3, ...PALETTE.skinDark);
+  c.fillRect(27, 33, 10, 2, ...PALETTE.skinDark);
 
-  // Beard
-  c.fillRect(24, 33, 3, 4, ...PALETTE.hairJetBlack);
-  c.fillRect(37, 33, 3, 4, ...PALETTE.hairJetBlack);
-  c.fillRect(26, 35, 12, 3, ...PALETTE.hairJetBlack);
-  c.fillRect(28, 37, 8, 2, ...PALETTE.hairJetBlack);
-  c.fillRect(29, 34, 6, 1, ...PALETTE.hairJetBlack);
+  // Trimmed beard & goatee
+  c.fillRect(24, 30, 3, 4, ...PALETTE.hairJetBlack);
+  c.fillRect(37, 30, 3, 4, ...PALETTE.hairJetBlack);
+  c.fillRect(26, 32, 12, 3, ...PALETTE.hairJetBlack);
+  c.fillRect(28, 34, 8, 2, ...PALETTE.hairJetBlack);
+  c.fillRect(29, 31, 6, 1, ...PALETTE.hairJetBlack);
 
-  // Face
-  c.fillRect(20, 17, 24, 14, ...PALETTE.skinDark);
-  c.fillRect(18, 22, 2, 7, ...PALETTE.skinDarkShadow);
-  c.fillRect(44, 22, 2, 7, ...PALETTE.skinDark);
-  c.fillRect(44, 23, 2, 3, ...PALETTE.obsidian);
-  c.setPixel(45, 24, ...PALETTE.neonGreen);
+  // --- FACE ---
+  c.fillRect(20, 15, 24, 14, ...PALETTE.skinDark);
+  c.fillRect(18, 19, 2, 7, ...PALETTE.skinDarkShadow);
+  c.fillRect(44, 19, 2, 7, ...PALETTE.skinDark);
+  // Bluetooth earbud
+  c.fillRect(44, 20, 2, 3, ...PALETTE.obsidian);
+  c.setPixel(45, 21, ...PALETTE.neonGreen);
 
   // Nose
-  c.fillRect(30, 25, 4, 5, ...PALETTE.skinDarkShadow);
-  c.fillRect(31, 26, 2, 4, ...PALETTE.skinDark);
-  c.fillRect(29, 29, 6, 1, 118, 75, 52, 255);
+  c.fillRect(30, 22, 4, 5, ...PALETTE.skinDarkShadow);
+  c.fillRect(31, 23, 2, 4, ...PALETTE.skinDark);
+  c.fillRect(29, 26, 6, 1, 118, 75, 52, 255);
 
-  // Mouth
-  c.fillRect(29, 32, 6, 1, 110, 65, 48, 255);
-  c.setPixel(35, 31, 110, 65, 48, 255);
+  // Smirk
+  c.fillRect(29, 29, 6, 1, 110, 65, 48, 255);
+  c.setPixel(35, 28, 110, 65, 48, 255);
 
   // Glasses & Eyes
-  c.strokeRect(21, 21, 9, 6, ...PALETTE.obsidian);
-  c.strokeRect(34, 21, 9, 6, ...PALETTE.obsidian);
-  c.fillRect(30, 22, 4, 1, ...PALETTE.obsidian);
+  c.strokeRect(21, 18, 9, 6, ...PALETTE.obsidian);
+  c.strokeRect(34, 18, 9, 6, ...PALETTE.obsidian);
+  c.fillRect(30, 19, 4, 1, ...PALETTE.obsidian);
 
-  c.fillRect(23, 23, 5, 2, ...PALETTE.white);
-  c.fillRect(25, 23, 2, 2, ...PALETTE.hairJetBlack);
-  c.setPixel(24, 23, ...PALETTE.white);
+  c.fillRect(23, 20, 5, 2, ...PALETTE.white);
+  c.fillRect(25, 20, 2, 2, ...PALETTE.hairJetBlack);
+  c.setPixel(24, 20, ...PALETTE.white);
 
-  c.fillRect(36, 23, 5, 2, ...PALETTE.white);
-  c.fillRect(37, 23, 2, 2, ...PALETTE.hairJetBlack);
-  c.setPixel(36, 23, ...PALETTE.white);
+  c.fillRect(36, 20, 5, 2, ...PALETTE.white);
+  c.fillRect(37, 20, 2, 2, ...PALETTE.hairJetBlack);
+  c.setPixel(36, 20, ...PALETTE.white);
 
-  // Monitor Glint Reflection
-  c.setPixel(22, 24, 140, 235, 255, 220);
-  c.setPixel(23, 25, 140, 235, 255, 220);
-  c.setPixel(24, 26, 140, 235, 255, 220);
-  c.setPixel(35, 24, 140, 235, 255, 220);
-  c.setPixel(36, 25, 140, 235, 255, 220);
-  c.setPixel(37, 26, 140, 235, 255, 220);
+  // Sleek cyan monitor glints
+  c.setPixel(22, 21, 140, 235, 255, 220);
+  c.setPixel(23, 22, 140, 235, 255, 220);
+  c.setPixel(35, 21, 140, 235, 255, 220);
+  c.setPixel(36, 22, 140, 235, 255, 220);
 
-  // Hair
-  c.fillRect(20, 8, 24, 10, ...PALETTE.hairJetBlack);
-  c.fillRect(22, 6, 20, 3, ...PALETTE.hairJetBlack);
-  c.fillRect(22, 16, 20, 2, ...PALETTE.hairJetBlack);
-  c.fillRect(19, 13, 2, 5, ...PALETTE.slateDark);
-  c.fillRect(43, 13, 2, 5, ...PALETTE.slateDark);
+  // --- HAIR (Jet Black Fade) ---
+  c.fillRect(20, 7, 24, 9, ...PALETTE.hairJetBlack);
+  c.fillRect(22, 5, 20, 3, ...PALETTE.hairJetBlack);
+  c.fillRect(22, 14, 20, 2, ...PALETTE.hairJetBlack);
+  c.fillRect(19, 11, 2, 5, ...PALETTE.slateDark);
+  c.fillRect(43, 11, 2, 5, ...PALETTE.slateDark);
 
-  for (let hy = 7; hy <= 14; hy += 2) {
+  for (let hy = 6; hy <= 12; hy += 2) {
     for (let hx = 22; hx <= 40; hx += 3) {
       c.setPixel(hx, hy, ...PALETTE.slateMid);
     }
@@ -1496,6 +1512,7 @@ function generateITTechPortrait() {
 
 function generatePlayerPortrait() {
   const c = new PixelCanvas(64, 64);
+  // Dark cyber-slate with subtle cyber grid
   for (let y = 0; y < 64; y++) {
     for (let x = 0; x < 64; x++) {
       const t = (x + y) / 128;
@@ -1506,96 +1523,106 @@ function generatePlayerPortrait() {
     }
   }
   for (let i = 0; i < 64; i += 16) {
-    c.fillRect(0, i, 64, 1, 28, 48, 72, 255);
-    c.fillRect(i, 0, 1, 64, 28, 48, 72, 255);
+    c.fillRect(0, i, 64, 1, 26, 44, 68, 255);
+    c.fillRect(i, 0, 1, 64, 26, 44, 68, 255);
   }
   c.strokeRect(0, 0, 64, 64, 36, 72, 108, 255);
 
-  // Shoulders & Teal Hoodie
-  c.fillRect(10, 44, 44, 20, ...PALETTE.clothTeal);
-  c.fillRect(12, 42, 40, 2, ...PALETTE.clothTeal);
-  c.fillRect(16, 40, 32, 2, ...PALETTE.clothTeal);
-  c.fillRect(14, 44, 4, 18, 36, 178, 196, 255);
-  c.fillRect(46, 44, 4, 18, 36, 178, 196, 255);
-  c.fillRect(10, 48, 4, 16, 10, 74, 84, 255);
-  c.fillRect(50, 48, 4, 16, 10, 74, 84, 255);
+  // --- SHOULDERS & TEAL HOODIE ---
+  c.fillRect(8, 38, 48, 26, ...PALETTE.clothTeal);
+  c.fillRect(12, 35, 40, 4, ...PALETTE.clothTeal);
+  c.fillRect(16, 33, 32, 3, ...PALETTE.clothTeal);
 
-  // Undershirt & Collar
-  c.fillRect(26, 38, 12, 8, ...PALETTE.clothWhite);
-  c.fillRect(21, 39, 6, 8, ...PALETTE.clothTeal);
-  c.fillRect(37, 39, 6, 8, ...PALETTE.clothTeal);
+  // Highlights & Creases
+  c.fillRect(14, 38, 4, 24, 36, 178, 196, 255);
+  c.fillRect(46, 38, 4, 24, 36, 178, 196, 255);
+  c.fillRect(8, 44, 4, 20, 10, 74, 84, 255);
+  c.fillRect(52, 44, 4, 20, 10, 74, 84, 255);
+
+  // High hoodie collar wrapping neck
+  c.fillRect(21, 32, 6, 9, ...PALETTE.clothTeal);
+  c.fillRect(37, 32, 6, 9, ...PALETTE.clothTeal);
+
+  // White undershirt notch
+  c.fillRect(27, 34, 10, 5, ...PALETTE.clothWhite);
+  c.fillRect(29, 39, 6, 3, ...PALETTE.clothWhite);
 
   // Drawstrings
-  c.fillRect(25, 46, 1, 9, ...PALETTE.clothWhite);
-  c.fillRect(38, 46, 1, 9, ...PALETTE.clothWhite);
+  c.fillRect(25, 40, 1, 10, ...PALETTE.clothWhite);
+  c.fillRect(38, 40, 1, 10, ...PALETTE.clothWhite);
 
-  // Badge
-  c.fillRect(28, 42, 2, 14, ...PALETTE.cyberCyan);
-  c.fillRect(34, 42, 2, 14, ...PALETTE.cyberCyan);
-  c.fillRect(28, 54, 8, 10, ...PALETTE.sunsetGold);
-  c.fillRect(29, 55, 6, 4, ...PALETTE.clothCharcoal);
-  c.fillRect(30, 60, 4, 2, ...PALETTE.cyberCyanLight);
+  // Security Lanyard & ID badge
+  c.fillRect(28, 36, 2, 18, ...PALETTE.cyberCyan);
+  c.fillRect(34, 36, 2, 18, ...PALETTE.cyberCyan);
+  c.fillRect(28, 50, 8, 11, ...PALETTE.sunsetGold);
+  c.fillRect(29, 51, 6, 5, ...PALETTE.clothCharcoal);
+  c.fillRect(30, 57, 4, 2, ...PALETTE.cyberCyanLight);
 
-  // Neck & Jaw
-  c.fillRect(26, 31, 12, 10, ...PALETTE.skinLight);
-  c.fillRect(26, 31, 12, 3, ...PALETTE.skinLightShadow);
-  c.fillRect(23, 30, 18, 5, ...PALETTE.skinLight);
-  c.fillRect(25, 34, 14, 3, ...PALETTE.skinLight);
-  c.fillRect(27, 36, 10, 2, ...PALETTE.skinLight);
+  // --- NECK & JAW ---
+  c.fillRect(26, 28, 12, 6, ...PALETTE.skinLight);
+  c.fillRect(26, 28, 12, 3, ...PALETTE.skinLightShadow);
+  c.fillRect(23, 27, 18, 5, ...PALETTE.skinLight);
+  c.fillRect(25, 31, 14, 3, ...PALETTE.skinLight);
+  c.fillRect(27, 33, 10, 2, ...PALETTE.skinLight);
 
-  // Face
-  c.fillRect(20, 16, 24, 15, ...PALETTE.skinLight);
-  c.fillRect(18, 21, 2, 7, ...PALETTE.skinLightShadow);
-  c.fillRect(44, 21, 2, 7, ...PALETTE.skinLight);
-  c.fillRect(18, 23, 2, 3, ...PALETTE.cyberCyan);
-  c.setPixel(17, 24, ...PALETTE.cyberCyanLight);
+  // --- FACE ---
+  c.fillRect(20, 14, 24, 15, ...PALETTE.skinLight);
+  c.fillRect(18, 18, 2, 7, ...PALETTE.skinLightShadow);
+  c.fillRect(44, 18, 2, 7, ...PALETTE.skinLight);
+
+  // Ear-comm cuff
+  c.fillRect(18, 20, 2, 3, ...PALETTE.cyberCyan);
+  c.setPixel(17, 21, ...PALETTE.cyberCyanLight);
 
   // Nose
-  c.fillRect(31, 24, 2, 6, ...PALETTE.skinLight);
-  c.setPixel(32, 29, 218, 160, 130, 255);
-  c.setPixel(31, 30, 195, 140, 110, 255);
+  c.fillRect(31, 21, 2, 6, ...PALETTE.skinLight);
+  c.setPixel(32, 26, 218, 160, 130, 255);
+  c.setPixel(31, 27, 195, 140, 110, 255);
 
   // Mouth
-  c.fillRect(28, 33, 8, 1, 185, 110, 95, 255);
-  c.setPixel(35, 32, 185, 110, 95, 255);
+  c.fillRect(28, 30, 8, 1, 185, 110, 95, 255);
+  c.setPixel(35, 29, 185, 110, 95, 255);
 
   // Eyebrows
-  c.fillRect(22, 20, 7, 2, ...PALETTE.hairDarkBrown);
-  c.fillRect(35, 20, 7, 2, ...PALETTE.hairDarkBrown);
-  c.setPixel(21, 21, ...PALETTE.hairDarkBrown);
-  c.setPixel(42, 21, ...PALETTE.hairDarkBrown);
+  c.fillRect(22, 17, 7, 2, ...PALETTE.hairDarkBrown);
+  c.fillRect(35, 17, 7, 2, ...PALETTE.hairDarkBrown);
 
   // Eyes
-  c.fillRect(23, 23, 5, 3, ...PALETTE.white);
-  c.fillRect(25, 23, 2, 3, ...PALETTE.hairDarkBrown);
-  c.fillRect(26, 23, 1, 2, 15, 10, 8, 255);
-  c.setPixel(25, 23, ...PALETTE.white);
-  c.fillRect(22, 22, 6, 1, 35, 22, 16, 255);
+  c.fillRect(23, 20, 5, 3, ...PALETTE.white);
+  c.fillRect(25, 20, 2, 3, ...PALETTE.hairDarkBrown);
+  c.fillRect(26, 20, 1, 2, 15, 10, 8, 255);
+  c.setPixel(25, 20, ...PALETTE.white);
+  c.fillRect(22, 19, 6, 1, 35, 22, 16, 255);
 
-  c.fillRect(36, 23, 5, 3, ...PALETTE.white);
-  c.fillRect(37, 23, 2, 3, ...PALETTE.hairDarkBrown);
-  c.fillRect(38, 23, 1, 2, 15, 10, 8, 255);
-  c.setPixel(37, 23, ...PALETTE.white);
-  c.fillRect(36, 22, 6, 1, 35, 22, 16, 255);
+  c.fillRect(36, 20, 5, 3, ...PALETTE.white);
+  c.fillRect(37, 20, 2, 3, ...PALETTE.hairDarkBrown);
+  c.fillRect(38, 20, 1, 2, 15, 10, 8, 255);
+  c.setPixel(37, 20, ...PALETTE.white);
+  c.fillRect(36, 19, 6, 1, 35, 22, 16, 255);
 
-  // Hair
-  c.fillRect(19, 9, 26, 8, ...PALETTE.hairDarkBrown);
-  c.fillRect(21, 6, 22, 4, ...PALETTE.hairDarkBrown);
-  c.fillRect(17, 13, 4, 10, ...PALETTE.hairDarkBrown);
-  c.fillRect(43, 13, 4, 10, ...PALETTE.hairDarkBrown);
+  // --- HAIR (Natural textured layered cut with honey-oak sunlit strands) ---
+  c.fillRect(19, 7, 26, 9, ...PALETTE.hairDarkBrown);
+  c.fillRect(21, 5, 22, 3, ...PALETTE.hairDarkBrown);
+  c.fillRect(17, 11, 4, 10, ...PALETTE.hairDarkBrown);
+  c.fillRect(43, 11, 4, 10, ...PALETTE.hairDarkBrown);
 
-  c.fillRect(21, 15, 8, 4, ...PALETTE.hairDarkBrown);
-  c.fillRect(28, 14, 10, 5, ...PALETTE.hairDarkBrown);
-  c.fillRect(36, 15, 7, 4, ...PALETTE.hairDarkBrown);
-  c.fillRect(24, 18, 5, 2, ...PALETTE.hairDarkBrown);
-  c.fillRect(32, 18, 4, 2, ...PALETTE.hairDarkBrown);
+  // Layered bangs
+  c.fillRect(21, 13, 8, 4, ...PALETTE.hairDarkBrown);
+  c.fillRect(28, 12, 10, 5, ...PALETTE.hairDarkBrown);
+  c.fillRect(36, 13, 7, 4, ...PALETTE.hairDarkBrown);
+  c.fillRect(24, 16, 5, 2, ...PALETTE.hairDarkBrown);
+  c.fillRect(32, 16, 4, 2, ...PALETTE.hairDarkBrown);
 
-  c.fillRect(24, 7, 16, 2, ...PALETTE.honeyOakMid);
-  c.fillRect(26, 9, 12, 2, ...PALETTE.honeyOakLight);
-  c.setPixel(22, 8, ...PALETTE.honeyOakLight);
-  c.setPixel(39, 8, ...PALETTE.honeyOakLight);
-  c.setPixel(29, 15, ...PALETTE.honeyOakMid);
-  c.setPixel(34, 16, ...PALETTE.honeyOakMid);
+  // Natural textured highlights on spike tips (not a solid block)
+  c.fillRect(23, 6, 3, 2, ...PALETTE.honeyOakMid);
+  c.fillRect(28, 5, 4, 2, ...PALETTE.honeyOakLight);
+  c.fillRect(34, 5, 3, 2, ...PALETTE.honeyOakLight);
+  c.fillRect(39, 6, 3, 2, ...PALETTE.honeyOakMid);
+  c.setPixel(25, 7, ...PALETTE.sunsetGold);
+  c.setPixel(30, 6, ...PALETTE.sunsetGold);
+  c.setPixel(36, 6, ...PALETTE.sunsetGold);
+  c.setPixel(29, 13, ...PALETTE.honeyOakMid);
+  c.setPixel(34, 14, ...PALETTE.honeyOakMid);
 
   saveAsset('portraits/player.png', c);
 }
