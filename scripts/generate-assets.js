@@ -842,6 +842,22 @@ function generateUIAssets() {
   pwd.fillRect(15, 18, 2, 4, ...PALETTE.black); // Keyhole
   pwd.fillRect(14, 21, 4, 2, ...PALETTE.black);
   saveAsset('ui/badge_password.png', pwd);
+
+  // 7. Fake Website / Rogue Domain Badge (32x32)
+  const web = new PixelCanvas(32, 32);
+  web.fillRect(2, 2, 28, 28, ...PALETTE.darkBg);
+  web.strokeRect(2, 2, 28, 28, ...PALETTE.neonRed);
+  // Globe outline
+  web.strokeRect(8, 8, 16, 16, ...PALETTE.cyanBright);
+  // Lat/Long lines
+  web.fillRect(15, 8, 2, 16, ...PALETTE.cyanMid);
+  web.fillRect(8, 15, 16, 2, ...PALETTE.cyanMid);
+  // Warning Exclamation mark overlay in corner
+  web.fillRect(19, 17, 9, 11, ...PALETTE.black);
+  web.strokeRect(19, 17, 9, 11, ...PALETTE.neonRed);
+  web.fillRect(23, 19, 2, 4, ...PALETTE.neonRed);
+  web.fillRect(23, 25, 2, 2, ...PALETTE.neonRed);
+  saveAsset('ui/badge_website.png', web);
 }
 
 // Master Generation Runner

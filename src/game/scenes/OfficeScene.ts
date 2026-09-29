@@ -344,11 +344,21 @@ export class OfficeScene extends Phaser.Scene {
         const state = gameState.getState();
         const mission1Done = state.completedMissions.includes('MISSION-001');
         const mission2Done = state.completedMissions.includes('MISSION-002');
+        const mission3Done = state.completedMissions.includes('MISSION-003');
 
-        if (mission2Done) {
+        if (mission3Done) {
           eventBridge.emit(GameEvents.START_DIALOGUE, {
             speaker: SPEAKERS.itTech,
-            lines: DIALOGUES.itTechMission2Complete
+            lines: DIALOGUES.itTechMission3Complete
+          });
+        } else if (mission2Done) {
+          eventBridge.emit(GameEvents.START_DIALOGUE, {
+            speaker: SPEAKERS.itTech,
+            lines: DIALOGUES.itTechMission3Briefing,
+            onComplete: () => {
+              gameState.startMission3();
+              audioSystem.play('warning');
+            }
           });
         } else if (mission1Done) {
           eventBridge.emit(GameEvents.START_DIALOGUE, {
@@ -472,8 +482,14 @@ export class OfficeScene extends Phaser.Scene {
     const state = gameState.getState();
     const mission1Done = state.completedMissions.includes('MISSION-001');
     const mission2Done = state.completedMissions.includes('MISSION-002');
+    const mission3Done = state.completedMissions.includes('MISSION-003');
 
-    if (mission2Done) {
+    if (mission3Done) {
+      eventBridge.emit(GameEvents.START_DIALOGUE, {
+        speaker: SPEAKERS.manager,
+        lines: DIALOGUES.managerMission3Complete
+      });
+    } else if (mission2Done) {
       eventBridge.emit(GameEvents.START_DIALOGUE, {
         speaker: SPEAKERS.manager,
         lines: DIALOGUES.managerMission2Complete

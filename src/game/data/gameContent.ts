@@ -60,12 +60,30 @@ export const DIALOGUES = {
   itTechMission2Complete: [
     "Incredible work! That app-based TOTP mandate and 5-attempt lockout policy completely shut down the botnet.",
     "Sarah Jenkins' account is secured with a clean high-entropy secret, and the attacker's sessions were terminated.",
-    "You're turning into one of our finest defense operators!"
+    "Now we have a report from Employee Relations: someone registered a clone website of our portal! Head to your workstation browser immediately!"
   ],
   managerMission2Complete: [
     "Top-tier incident response on that credential attack.",
     "Enforcing robust multi-factor authentication and account lockout is the bedrock of Zero Trust architecture.",
     "Take a breath and review the case logs. You've safeguarded the entire company's financial core today."
+  ],
+
+  // Mission 3 Dialogues
+  itTechMission3Briefing: [
+    "Analyst, emergency alert! Staff across Marketing and Operations are receiving chat messages with an urgent link.",
+    "The link directs them to a website at 'portal-nexatech-login.com'. It looks identical to our corporate SSO portal!",
+    "Employees are being tricked into thinking our certificate expired. Open NEXA-BROWSER on your workstation.",
+    "Inspect the URL, check the SSL certificate, dissect the form action, and execute our DNS/firewall mitigation!"
+  ],
+  itTechMission3Complete: [
+    "Outstanding technical forensics! Your DNS sinkhole caught 42 employee redirects and redirected them to our training portal.",
+    "You completely dismantled that rogue portal before a single credential was exfiltrated.",
+    "You're proving to be one of the best incident responders we've ever hired!"
+  ],
+  managerMission3Complete: [
+    "Outstanding technical forensics on that fake portal. Most people blindly trust the HTTPS padlock icon without verifying the root domain.",
+    "Our perimeter firewalls and corporate DNS resolvers have blacklisted the rogue harvest server.",
+    "Review your case register. You've neutralized phishing, credential stuffing, and fake web portals!"
   ]
 };
 
@@ -200,4 +218,68 @@ export const IAM_INCIDENT_DATA = {
   currentMfaStatus: 'OPTIONAL (NOT ENROLLED)',
   currentLockoutPolicy: 'DISABLED (Unlimited Attempts)',
   activeSession: 'ALERT: Unauthorized login established from IP 185.220.101.44'
+};
+
+// ==========================================
+// MISSION 3: SCAMS & FAKE WEBSITES CLUES
+// ==========================================
+export interface WebForensicClue {
+  id: string;
+  name: string;
+  category: 'domain' | 'ssl' | 'form' | 'social';
+  finding: string;
+  explanation: string;
+  scoreBonus: number;
+}
+
+export const WEB_FORENSIC_CLUES: WebForensicClue[] = [
+  {
+    id: 'CLUE-WEB-01',
+    name: 'Typosquatted Look-Alike Domain',
+    category: 'domain',
+    finding: 'portal-nexatech-login.com (Hyphenated deceptive domain)',
+    explanation:
+      'The address uses hyphenated keywords ("portal-nexatech-login.com") instead of our official domain ("nexatech.internal" or "login.nexatech.com"). Attackers register look-alike domains to exploit visual familiarity and hurried inspection.',
+    scoreBonus: 25
+  },
+  {
+    id: 'CLUE-WEB-02',
+    name: 'Deceptive HTTPS Padlock & CA Discrepancy',
+    category: 'ssl',
+    finding: 'Free Automated DV Certificate (Anonymous Organization)',
+    explanation:
+      'The green padlock only proves data transmission is encrypted—it does NOT verify the site is genuine! Anyone can obtain a free SSL certificate for a phishing domain. NexaTech uses Organization-Validated (OV) certificates registered to NexaTech Corporation.',
+    scoreBonus: 25
+  },
+  {
+    id: 'CLUE-WEB-03',
+    name: 'External Exfiltration Form Action',
+    category: 'form',
+    finding: 'POSTs to "api-harvest.darkproxy.net/v1/capture"',
+    explanation:
+      'Inspecting the login form action reveals entered usernames and passwords are sent to an external harvesting server. The user is then silently redirected to the real homepage so they believe their login attempt simply lagged.',
+    scoreBonus: 25
+  },
+  {
+    id: 'CLUE-WEB-04',
+    name: 'Urgent Certificate Expiration Lure',
+    category: 'social',
+    finding: 'Deceptive Administrative Urgency Banner ("SSO Expiring in 60m")',
+    explanation:
+      'The rogue webpage displays an urgent warning demanding re-authentication within 60 minutes. High administrative urgency creates panic and blinds employees from noticing blatant address-bar discrepancies.',
+    scoreBonus: 25
+  }
+];
+
+export const CLONE_WEBSITE_DATA = {
+  reportedUrl: 'https://portal-nexatech-login.com/sso/auth',
+  officialUrl: 'https://login.nexatech.internal',
+  sslIssuer: 'FreeSSL Automated Domain Authority (DV)',
+  sslSubject: 'CN=portal-nexatech-login.com',
+  sslValidUntil: 'Expires in 88 days (Issued 2 days ago)',
+  officialSslIssuer: 'DigiTrust Global Organization Authority (OV - NexaTech Corp)',
+  formAction: 'https://api-harvest.darkproxy.net/v1/capture',
+  exfiltrationServer: 'darkproxy.net [IP: 198.51.100.89]',
+  bannerUrgency: 'CRITICAL ALERT: NexaTech SSO Certificate Refresh Required within 60 minutes. Re-authenticate credentials below to retain active session privileges.',
+  reportedBy: 'Marketing & HR Department Slack Channel'
 };

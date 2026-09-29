@@ -42,6 +42,9 @@ export class PreloadScene extends Phaser.Scene {
     this.load.image('badge_risk', '/assets/ui/badge_risk.png');
     this.load.image('badge_awareness', '/assets/ui/badge_awareness.png');
     this.load.image('badge_clue', '/assets/ui/badge_clue.png');
+    this.load.image('badge_mfa', '/assets/ui/badge_mfa.png');
+    this.load.image('badge_password', '/assets/ui/badge_password.png');
+    this.load.image('badge_website', '/assets/ui/badge_website.png');
 
     // Spritesheets (32x48 per frame)
     this.load.spritesheet('player', '/assets/characters/player.png', {

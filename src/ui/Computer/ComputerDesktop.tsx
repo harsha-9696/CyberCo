@@ -1,8 +1,9 @@
-// ComputerDesktop.tsx - In-game retro operating system interface supporting Email and IAM Console
+// ComputerDesktop.tsx - In-game retro operating system interface supporting Email, IAM Console, and Browser
 
 import React, { useState } from 'react';
 import { EmailApp } from '../Email/EmailApp';
 import { IAMConsoleApp } from '../IAMConsole/IAMConsoleApp';
+import { BrowserApp } from '../Browser/BrowserApp';
 import { gameState, SecurityDecision } from '../../game/systems/GameState';
 import { audioSystem } from '../../game/systems/AudioSystem';
 import { eventBridge, GameEvents } from '../../game/systems/EventBridge';
@@ -11,13 +12,11 @@ import {
   Mail,
   Globe,
   FolderLock,
-  Shield,
   KeyRound,
   X,
   Minus,
   Square,
-  Wifi,
-  Terminal
+  Wifi
 } from 'lucide-react';
 
 interface ComputerDesktopProps {
@@ -27,8 +26,8 @@ interface ComputerDesktopProps {
 
 export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDecisionMade }) => {
   const currentMission = gameState.getState().activeMissionId || 'MISSION-001';
-  const [activeWindow, setActiveWindow] = useState<'email' | 'iam' | null>(
-    currentMission === 'MISSION-002' ? 'iam' : 'email'
+  const [activeWindow, setActiveWindow] = useState<'email' | 'iam' | 'browser' | null>(
+    currentMission === 'MISSION-003' ? 'browser' : currentMission === 'MISSION-002' ? 'iam' : 'email'
   );
   const [systemAlert, setSystemAlert] = useState<string | null>(null);
 
@@ -38,6 +37,8 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
       setActiveWindow('email');
     } else if (appName === 'iam') {
       setActiveWindow('iam');
+    } else if (appName === 'browser') {
+      setActiveWindow('browser');
     } else {
       audioSystem.play('warning');
       setSystemAlert(`Access to ${appName.toUpperCase()} is restricted. Clearance Level 2 required.`);
@@ -124,7 +125,7 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
           </span>
         </div>
 
-        {/* 2. App Icon: IAM & Security Console (Active in Mission 2) */}
+        {/* 2. App Icon: IAM Console */}
         <div
           onClick={() => handleLaunchApp('iam')}
           style={{
@@ -178,7 +179,7 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
           </span>
         </div>
 
-        {/* 3. App Icon: Browser */}
+        {/* 3. App Icon: Web Browser (Active in Mission 3) */}
         <div
           onClick={() => handleLaunchApp('browser')}
           style={{
@@ -189,24 +190,45 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
             width: '88px',
             cursor: 'pointer',
             padding: '8px',
-            borderRadius: '4px'
+            borderRadius: '4px',
+            background: activeWindow === 'browser' ? 'rgba(0, 210, 230, 0.2)' : 'transparent',
+            border: activeWindow === 'browser' ? '1px solid var(--cyan-bright)' : '1px solid transparent'
           }}
         >
-          <div
-            style={{
-              width: '48px',
-              height: '48px',
-              backgroundColor: '#131e30',
-              border: '2px solid #334460',
-              borderRadius: '6px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Globe size={24} color="#7890b0" />
+          <div style={{ position: 'relative' }}>
+            <div
+              style={{
+                width: '48px',
+                height: '48px',
+                backgroundColor: '#131e30',
+                border: '2px solid var(--cyan-bright)',
+                borderRadius: '6px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 0 10px rgba(0, 210, 230, 0.3)'
+              }}
+            >
+              <Globe size={24} color="var(--cyan-bright)" />
+            </div>
+            {currentMission === 'MISSION-003' && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: -4,
+                  right: -4,
+                  width: '14px',
+                  height: '14px',
+                  backgroundColor: 'var(--neon-red)',
+                  borderRadius: '50%',
+                  border: '2px solid #070c14',
+                  boxShadow: '0 0 6px var(--neon-red)'
+                }}
+                className="animate-blink"
+              />
+            )}
           </div>
-          <span style={{ fontSize: '11px', color: '#8fa4be', textAlign: 'center' }}>
+          <span style={{ fontSize: '11px', color: '#fff', textAlign: 'center', fontWeight: 'bold' }}>
             Web Browser
           </span>
         </div>
@@ -277,7 +299,13 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
               left: '120px',
               right: '24px',
               backgroundColor: '#0c121e',
-              border: `2px solid ${activeWindow === 'iam' ? 'var(--neon-amber)' : 'var(--cyan-dark)'}`,
+              border: `2px solid ${
+                activeWindow === 'iam'
+                  ? 'var(--neon-amber)'
+                  : activeWindow === 'browser'
+                  ? 'var(--cyan-bright)'
+                  : 'var(--cyan-dark)'
+              }`,
               boxShadow: '0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 210, 230, 0.2)',
               borderRadius: '6px',
               display: 'flex',
@@ -290,7 +318,12 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
             <div
               style={{
                 height: '34px',
-                backgroundColor: activeWindow === 'iam' ? '#181f2b' : '#141e30',
+                backgroundColor:
+                  activeWindow === 'iam'
+                    ? '#181f2b'
+                    : activeWindow === 'browser'
+                    ? '#111e2f'
+                    : '#141e30',
                 borderBottom: '1px solid #23344d',
                 display: 'flex',
                 alignItems: 'center',
@@ -301,8 +334,10 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                 {activeWindow === 'email' ? (
                   <Mail size={16} color="var(--cyan-bright)" />
-                ) : (
+                ) : activeWindow === 'iam' ? (
                   <KeyRound size={16} color="var(--neon-amber)" />
+                ) : (
+                  <Globe size={16} color="var(--cyan-bright)" />
                 )}
                 <span
                   style={{
@@ -314,7 +349,9 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
                 >
                   {activeWindow === 'email'
                     ? 'NEXA-MAIL // CORPORATE INBOX (OFFICIAL)'
-                    : 'NEXA-IAM // IDENTITY & ACCESS MANAGEMENT SECURITY CONSOLE'}
+                    : activeWindow === 'iam'
+                    ? 'NEXA-IAM // IDENTITY & ACCESS MANAGEMENT SECURITY CONSOLE'
+                    : 'NEXA-BROWSER // ENTERPRISE WEB NAVIGATOR'}
                 </span>
               </div>
 
@@ -361,12 +398,14 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
               </div>
             </div>
 
-            {/* Window Body: EmailApp or IAMConsoleApp */}
+            {/* Window Body: EmailApp, IAMConsoleApp, or BrowserApp */}
             <div style={{ flex: 1, minHeight: 0 }}>
               {activeWindow === 'email' ? (
                 <EmailApp onDecisionMade={onDecisionMade} />
-              ) : (
+              ) : activeWindow === 'iam' ? (
                 <IAMConsoleApp onDecisionMade={onDecisionMade} />
+              ) : (
+                <BrowserApp onDecisionMade={onDecisionMade} />
               )}
             </div>
           </div>
@@ -389,7 +428,15 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
         {/* Start Menu Button & Active Windows */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
-            onClick={() => handleLaunchApp(currentMission === 'MISSION-002' ? 'iam' : 'email')}
+            onClick={() =>
+              handleLaunchApp(
+                currentMission === 'MISSION-003'
+                  ? 'browser'
+                  : currentMission === 'MISSION-002'
+                  ? 'iam'
+                  : 'email'
+              )
+            }
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -427,10 +474,15 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
                   <Mail size={12} color="var(--cyan-bright)" />
                   Mail Client
                 </>
-              ) : (
+              ) : activeWindow === 'iam' ? (
                 <>
                   <KeyRound size={12} color="var(--neon-amber)" />
                   IAM Console
+                </>
+              ) : (
+                <>
+                  <Globe size={12} color="var(--cyan-bright)" />
+                  Browser
                 </>
               )}
             </div>
@@ -445,7 +497,7 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
           </div>
 
           <span style={{ fontSize: '12px', color: '#d0e2f2', fontFamily: 'var(--font-mono)' }}>
-            09:35 AM
+            09:48 AM
           </span>
 
           <button

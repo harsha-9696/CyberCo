@@ -12,7 +12,11 @@ export type SecurityDecision =
   | 'ENFORCE_MFA_LOCKOUT'
   | 'RESET_PASSWORD_ONLY'
   | 'SMS_MFA_ONLY'
-  | 'IGNORE_INCIDENT';
+  | 'IGNORE_INCIDENT'
+  | 'SINKHOLE_AND_ADVISE'
+  | 'WARN_USERS_ONLY'
+  | 'FLOOD_CREDENTIALS'
+  | 'TRUST_HTTPS_PADLOCK';
 
 export interface GameSettings {
   music: boolean;
@@ -45,7 +49,7 @@ export interface GameSaveData {
   stats: PlayerStats;
   currentObjective: string;
   missionStatus: MissionStatus;
-  activeMissionId: 'MISSION-001' | 'MISSION-002';
+  activeMissionId: 'MISSION-001' | 'MISSION-002' | 'MISSION-003';
   discoveredClues: string[];
   investigationScore: number;
   caseFile: CaseFile;
@@ -91,8 +95,25 @@ const INITIAL_CASE_FILE_2: CaseFile = {
   ]
 };
 
+const INITIAL_CASE_FILE_3: CaseFile = {
+  id: 'CASE #003',
+  title: 'Typosquatting & Rogue Portals',
+  status: 'PENDING',
+  decision: null,
+  cluesFound: [],
+  totalClues: 4,
+  score: 0,
+  consequenceText: '',
+  learningPoints: [
+    'The HTTPS padlock only encrypts traffic—it does not verify a website is genuine',
+    'Carefully inspect the root domain before the slash for deceptive hyphenated brand names',
+    'Verify SSL/TLS Certificate Authority issuer and organization validation details',
+    'Implement automated DNS sinkholing and firewall blocks to protect all corporate endpoints'
+  ]
+};
+
 const DEFAULT_STATE: GameSaveData = {
-  version: 2,
+  version: 3,
   currentScene: 'MainMenu',
   playerCoords: { x: 380, y: 520 },
   stats: {
@@ -108,7 +129,8 @@ const DEFAULT_STATE: GameSaveData = {
   caseFile: INITIAL_CASE_FILE_1,
   caseFiles: {
     'MISSION-001': INITIAL_CASE_FILE_1,
-    'MISSION-002': INITIAL_CASE_FILE_2
+    'MISSION-002': INITIAL_CASE_FILE_2,
+    'MISSION-003': INITIAL_CASE_FILE_3
   },
   completedMissions: [],
   settings: {
@@ -130,8 +152,12 @@ export class GameStateManager {
     if (!this.state.caseFiles) {
       this.state.caseFiles = {
         'MISSION-001': this.state.caseFile || INITIAL_CASE_FILE_1,
-        'MISSION-002': INITIAL_CASE_FILE_2
+        'MISSION-002': INITIAL_CASE_FILE_2,
+        'MISSION-003': INITIAL_CASE_FILE_3
       };
+    }
+    if (!this.state.caseFiles['MISSION-003']) {
+      this.state.caseFiles['MISSION-003'] = INITIAL_CASE_FILE_3;
     }
   }
 
@@ -229,6 +255,27 @@ export class GameStateManager {
     });
   }
 
+  public startMission3(): void {
+    this.updateState({
+      activeMissionId: 'MISSION-003',
+      missionStatus: 'active',
+      currentObjective: 'Investigate Reported Fake SSO Portal in NEXA-BROWSER on your Workstation',
+      discoveredClues: [],
+      investigationScore: 0,
+      caseFile: {
+        ...this.state.caseFiles['MISSION-003'],
+        status: 'ACTIVE'
+      },
+      caseFiles: {
+        ...this.state.caseFiles,
+        'MISSION-003': {
+          ...this.state.caseFiles['MISSION-003'],
+          status: 'ACTIVE'
+        }
+      }
+    });
+  }
+
   public addClue(clueId: string, scoreBonus: number): void {
     if (!this.state.discoveredClues.includes(clueId)) {
       const newClues = [...this.state.discoveredClues, clueId];
@@ -307,7 +354,7 @@ export class GameStateManager {
             'In a real attack, your corporate credentials would have been captured by the attacker.';
           break;
       }
-    } else {
+    } else if (currentMissionId === 'MISSION-002') {
       // MISSION-002: Password Security & MFA
       switch (decision) {
         case 'ENFORCE_MFA_LOCKOUT':
@@ -343,6 +390,42 @@ export class GameStateManager {
             'Treating the alert as a false alarm allowed the threat actor to establish persistent access using the cracked password, leading to unauthorized data exfiltration from the finance department.';
           break;
       }
+    } else {
+      // MISSION-003: Scams & Fake Look-Alike Websites
+      switch (decision) {
+        case 'SINKHOLE_AND_ADVISE':
+          awarenessDelta = +25;
+          riskDelta = -20;
+          xpDelta = +150;
+          feedbackTitle = 'EXCELLENT INCIDENT MITIGATION';
+          feedbackDescription =
+            'You deployed an immediate corporate DNS sinkhole redirecting all requests to an internal educational block page, blocked the domain at the perimeter firewall, and broadcast an emergency security advisory. Threat neutralized across all endpoints!';
+          break;
+        case 'WARN_USERS_ONLY':
+          awarenessDelta = +10;
+          riskDelta = +10;
+          xpDelta = +50;
+          feedbackTitle = 'PARTIAL MITIGATION (INSUFFICIENT)';
+          feedbackDescription =
+            'Sending an advisory alerted observant staff, but without technical DNS and firewall enforcement, several employees still clicked the lure message and submitted their credentials before reading the email.';
+          break;
+        case 'FLOOD_CREDENTIALS':
+          awarenessDelta = +0;
+          riskDelta = +15;
+          xpDelta = +20;
+          feedbackTitle = 'INEFFECTIVE COUNTERMEASURE';
+          feedbackDescription =
+            'Flooding the phishing server with garbage accounts did not protect legitimate employees from falling for the clone portal, and alerted the attacker to rotate to an unblocked secondary domain.';
+          break;
+        case 'TRUST_HTTPS_PADLOCK':
+          awarenessDelta = -20;
+          riskDelta = +40;
+          xpDelta = +0;
+          feedbackTitle = 'CRITICAL SECURITY MISCONCEPTION';
+          feedbackDescription =
+            'Assuming the padlock icon meant the portal was legitimate allowed the threat actor to harvest dozens of corporate Single Sign-On credentials. The padlock only proves encrypted transmission to the attacker server!';
+          break;
+      }
     }
 
     const newAwareness = Math.min(100, Math.max(0, this.state.stats.awareness + awarenessDelta));
@@ -358,10 +441,14 @@ export class GameStateManager {
       consequenceText: feedbackDescription
     };
 
-    const nextObjective =
-      currentMissionId === 'MISSION-001'
-        ? 'Mission 001 Complete! Speak to Marcus Vance or Devon Reed in the IT room.'
-        : 'Mission 002 Complete! System secured. Speak to Marcus Vance.';
+    let nextObjective = '';
+    if (currentMissionId === 'MISSION-001') {
+      nextObjective = 'Mission 001 Complete! Speak to Marcus Vance or Devon Reed in the IT room.';
+    } else if (currentMissionId === 'MISSION-002') {
+      nextObjective = 'Mission 002 Complete! Speak to Marcus Vance or Devon Reed about the reported fake website.';
+    } else {
+      nextObjective = 'Mission 003 Complete! Rogue portal neutralized. Return to Marcus Vance.';
+    }
 
     this.updateState({
       stats: {

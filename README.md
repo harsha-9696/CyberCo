@@ -141,6 +141,22 @@ npm run preview
     3. Enable SMS MFA Only (Suboptimal Method).
     4. Dismiss as False Positive (Compromise).
   - Live Case #002 dossier update, stat calculations, and incident debriefing.
+- **Mission 003 — Scams & Fake Look-Alike Websites (Typosquatting & Rogue Portals):**
+  - High-priority security incident triggered across Marketing & Operations via smishing/chat links.
+  - Working **NEXA-BROWSER** web application with interactive tab navigation, address bar, and SSL inspector.
+  - Reported Rogue Clone Portal: `https://portal-nexatech-login.com/sso/auth`.
+  - Official Reference Intranet: `https://login.nexatech.internal/auth`.
+  - In-depth forensic investigation of 4 deceptive elements:
+    1. **Typosquatted Look-Alike Domain:** Hyphenated brand domain deceiving hurried employees.
+    2. **Deceptive HTTPS Padlock & CA Discrepancy:** Proves that an SSL padlock alone does NOT guarantee safety (free automated Domain-Validated cert issued to anonymous registrants vs corporate EV wildcard cert).
+    3. **Exfiltration Action URL:** Form `POST` payload routed to an offshore data harvesting endpoint (`194.26.29.112/collect.php`).
+    4. **Manipulated Visual Clones & Urgency Banners:** Faked corporate theme with artificial expiration warnings to compel immediate credential entry.
+  - Interactive forensic tabs: Live Website View, Deep Forensic Inspector, and Evidence Register.
+  - Defensive Incident Mitigation Matrix:
+    1. **DNS Sinkhole + Security Advisory:** Blacklist rogue domain on corporate DNS resolvers, reroute visitors to awareness portal, and revoke leaked sessions (+100 XP, -15% Risk, +15% Awareness, Web Sentinel Badge).
+    2. **Issue User Warning Only:** Send email warning without active DNS/firewall block (+40 XP, +10% Risk).
+    3. **Counter-Attack / Flood Rogue Server:** Run unauthorized credential flooding (illegal vigilante action, +15 XP, +25% Risk).
+    4. **Trust HTTPS Padlock & Whitelist:** False negative decision causing full credential harvesting (-20 XP, +35% Risk).
 - **Save & Load:** Complete state persistence in `localStorage` preserving scene location, awareness, risk, XP, discovered clues, and completed missions across browser refreshes.
 
 ---
@@ -149,10 +165,10 @@ npm run preview
 
 The centralized state and mission engine is pre-architected to accommodate future cybersecurity training modules:
 
-1. **Mission 3: Scams & Fake Look-Alike Websites**
-   - In-game browser exploration, typosquatting domain analysis, SSL certificate validation, and fake login page detection.
-2. **Mission 4: Malware & Ransomware Incident Response**
+1. **Mission 4: Malware & Ransomware Incident Response**
    - Malicious macros, host quarantine, network segmentation, and digital forensics containment.
+2. **Mission 5: Social Engineering & Physical Security (Tailgating / USB Drop)**
+   - Badge cloning, rogue USB drops in the parking lot, and social engineering confrontation.
 
 ---
 
