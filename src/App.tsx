@@ -135,8 +135,16 @@ export const App: React.FC = () => {
     setActiveDecision(decision);
     setDecisionOutcome(result);
 
-    const goodDecisions = ['REPORT', 'ENFORCE_MFA_LOCKOUT', 'SINKHOLE_AND_ADVISE'];
-    const badDecisions = ['OPEN_LINK', 'REPLY', 'IGNORE_INCIDENT', 'TRUST_HTTPS_PADLOCK'];
+    const goodDecisions = ['REPORT', 'ENFORCE_MFA_LOCKOUT', 'SINKHOLE_AND_ADVISE', 'ISOLATE_HOST_AND_RESTORE'];
+    const badDecisions = [
+      'OPEN_LINK',
+      'REPLY',
+      'IGNORE_INCIDENT',
+      'TRUST_HTTPS_PADLOCK',
+      'REBOOT_SERVER',
+      'PAY_RANSOM_DEMAND',
+      'TERMINATE_POWERSHELL_ONLY'
+    ];
     if (goodDecisions.includes(decision)) {
       audioSystem.play('success');
     } else if (badDecisions.includes(decision)) {

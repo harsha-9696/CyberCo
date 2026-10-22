@@ -456,12 +456,30 @@ export class OfficeScene extends Phaser.Scene {
         const mission1Done = state.completedMissions.includes('MISSION-001');
         const mission2Done = state.completedMissions.includes('MISSION-002');
         const mission3Done = state.completedMissions.includes('MISSION-003');
+        const mission4Done = state.completedMissions.includes('MISSION-004');
+        const mission4Active = state.activeMissionId === 'MISSION-004' && !mission4Done;
         const mission3Active = state.activeMissionId === 'MISSION-003' && !mission3Done;
 
-        if (mission3Done) {
+        if (mission4Done) {
           eventBridge.emit(GameEvents.START_DIALOGUE, {
             speaker: SPEAKERS.itTech,
-            lines: DIALOGUES.itTechMission3Complete
+            lines: DIALOGUES.itTechMission4Complete
+          });
+        } else if (mission4Active) {
+          // Mission 4 already started — show briefing reminder
+          eventBridge.emit(GameEvents.START_DIALOGUE, {
+            speaker: SPEAKERS.itTech,
+            lines: DIALOGUES.itTechMission4Briefing
+          });
+        } else if (mission3Done) {
+          // Mission 3 complete, not yet started M4 — debrief M3 & auto-start Mission 4
+          eventBridge.emit(GameEvents.START_DIALOGUE, {
+            speaker: SPEAKERS.itTech,
+            lines: DIALOGUES.itTechMission3Complete,
+            onComplete: () => {
+              gameState.startMission4();
+              audioSystem.play('warning');
+            }
           });
         } else if (mission3Active) {
           // Mission 3 already started — just show the briefing reminder
@@ -602,8 +620,14 @@ export class OfficeScene extends Phaser.Scene {
     const mission1Done = state.completedMissions.includes('MISSION-001');
     const mission2Done = state.completedMissions.includes('MISSION-002');
     const mission3Done = state.completedMissions.includes('MISSION-003');
+    const mission4Done = state.completedMissions.includes('MISSION-004');
 
-    if (mission3Done) {
+    if (mission4Done) {
+      eventBridge.emit(GameEvents.START_DIALOGUE, {
+        speaker: SPEAKERS.manager,
+        lines: DIALOGUES.managerMission4Complete
+      });
+    } else if (mission3Done) {
       eventBridge.emit(GameEvents.START_DIALOGUE, {
         speaker: SPEAKERS.manager,
         lines: DIALOGUES.managerMission3Complete

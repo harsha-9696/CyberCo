@@ -16,7 +16,11 @@ export type SecurityDecision =
   | 'SINKHOLE_AND_ADVISE'
   | 'WARN_USERS_ONLY'
   | 'FLOOD_CREDENTIALS'
-  | 'TRUST_HTTPS_PADLOCK';
+  | 'TRUST_HTTPS_PADLOCK'
+  | 'ISOLATE_HOST_AND_RESTORE'
+  | 'TERMINATE_POWERSHELL_ONLY'
+  | 'REBOOT_SERVER'
+  | 'PAY_RANSOM_DEMAND';
 
 export interface GameSettings {
   music: boolean;
@@ -49,7 +53,7 @@ export interface GameSaveData {
   stats: PlayerStats;
   currentObjective: string;
   missionStatus: MissionStatus;
-  activeMissionId: 'MISSION-001' | 'MISSION-002' | 'MISSION-003';
+  activeMissionId: 'MISSION-001' | 'MISSION-002' | 'MISSION-003' | 'MISSION-004';
   discoveredClues: string[];
   investigationScore: number;
   caseFile: CaseFile;
@@ -113,8 +117,25 @@ const INITIAL_CASE_FILE_3: CaseFile = {
   ]
 };
 
+const INITIAL_CASE_FILE_4: CaseFile = {
+  id: 'CASE #004',
+  title: 'Zero-Day Ransomware & C2 Outbreak',
+  status: 'PENDING',
+  decision: null,
+  cluesFound: [],
+  totalClues: 4,
+  score: 0,
+  consequenceText: '',
+  learningPoints: [
+    'Office documents and user applications should never spawn PowerShell or script shells (LOLBins)',
+    'Ransomware attempts to delete Volume Shadow Copies to prevent restore without paying extortion',
+    'Sever network interfaces (Host Isolation) immediately to prevent C2 communication and lateral spread',
+    'Never pay ransom demands—restore verified clean data from immutable offline/air-gapped backups'
+  ]
+};
+
 const DEFAULT_STATE: GameSaveData = {
-  version: 3,
+  version: 4,
   currentScene: 'MainMenu',
   playerCoords: { x: 380, y: 520 },
   stats: {
@@ -131,7 +152,8 @@ const DEFAULT_STATE: GameSaveData = {
   caseFiles: {
     'MISSION-001': INITIAL_CASE_FILE_1,
     'MISSION-002': INITIAL_CASE_FILE_2,
-    'MISSION-003': INITIAL_CASE_FILE_3
+    'MISSION-003': INITIAL_CASE_FILE_3,
+    'MISSION-004': INITIAL_CASE_FILE_4
   },
   completedMissions: [],
   settings: {
@@ -155,11 +177,15 @@ export class GameStateManager {
       this.state.caseFiles = {
         'MISSION-001': this.state.caseFile || INITIAL_CASE_FILE_1,
         'MISSION-002': INITIAL_CASE_FILE_2,
-        'MISSION-003': INITIAL_CASE_FILE_3
+        'MISSION-003': INITIAL_CASE_FILE_3,
+        'MISSION-004': INITIAL_CASE_FILE_4
       };
     }
     if (!this.state.caseFiles['MISSION-003']) {
       this.state.caseFiles['MISSION-003'] = INITIAL_CASE_FILE_3;
+    }
+    if (!this.state.caseFiles['MISSION-004']) {
+      this.state.caseFiles['MISSION-004'] = INITIAL_CASE_FILE_4;
     }
   }
 
@@ -277,6 +303,27 @@ export class GameStateManager {
         ...this.state.caseFiles,
         'MISSION-003': {
           ...this.state.caseFiles['MISSION-003'],
+          status: 'ACTIVE'
+        }
+      }
+    });
+  }
+
+  public startMission4(): void {
+    this.updateState({
+      activeMissionId: 'MISSION-004',
+      missionStatus: 'active',
+      currentObjective: 'Investigate Critical Ransomware Outbreak on NEXA-EDR SOC Console',
+      discoveredClues: [],
+      investigationScore: 0,
+      caseFile: {
+        ...this.state.caseFiles['MISSION-004'],
+        status: 'ACTIVE'
+      },
+      caseFiles: {
+        ...this.state.caseFiles,
+        'MISSION-004': {
+          ...this.state.caseFiles['MISSION-004'],
           status: 'ACTIVE'
         }
       }
@@ -407,7 +454,7 @@ export class GameStateManager {
             'Treating the alert as a false alarm allowed the threat actor to establish persistent access using the cracked password, leading to unauthorized data exfiltration from the finance department.';
           break;
       }
-    } else {
+    } else if (currentMissionId === 'MISSION-003') {
       // MISSION-003: Scams & Fake Look-Alike Websites
       switch (decision) {
         case 'SINKHOLE_AND_ADVISE':
@@ -443,6 +490,42 @@ export class GameStateManager {
             'Assuming the padlock icon meant the portal was legitimate allowed the threat actor to harvest dozens of corporate Single Sign-On credentials. The padlock only proves encrypted transmission to the attacker server!';
           break;
       }
+    } else {
+      // MISSION-004: Zero-Day Ransomware & EDR Containment
+      switch (decision) {
+        case 'ISOLATE_HOST_AND_RESTORE':
+          awarenessDelta = +25;
+          riskDelta = -25;
+          xpDelta = +200;
+          feedbackTitle = 'HEROIC INCIDENT CONTAINMENT';
+          feedbackDescription =
+            'You severed network interfaces to contain the active C2 beacon, preserved volatile RAM telemetry for forensic attribution, terminated the malicious process tree, and initiated a clean rollback from immutable snapshots. Zero files lost, zero ransom paid!';
+          break;
+        case 'TERMINATE_POWERSHELL_ONLY':
+          awarenessDelta = +5;
+          riskDelta = +15;
+          xpDelta = +40;
+          feedbackTitle = 'INCOMPLETE THREAT REMEDIATION';
+          feedbackDescription =
+            'Terminating only the running PowerShell process left the scheduled persistence task and active C2 socket intact. The encryptor re-spawned 10 minutes later and locked shared storage.';
+          break;
+        case 'REBOOT_SERVER':
+          awarenessDelta = -15;
+          riskDelta = +35;
+          xpDelta = +0;
+          feedbackTitle = 'CATASTROPHIC INCIDENT RESPONSE';
+          feedbackDescription =
+            'Rebooting the server wiped volatile memory evidence needed for forensic attribution, and triggered the ransomware payload registry autorun on reboot, locking the entire server!';
+          break;
+        case 'PAY_RANSOM_DEMAND':
+          awarenessDelta = -25;
+          riskDelta = +50;
+          xpDelta = +0;
+          feedbackTitle = 'SURRENDER TO CYBER EXTORTION';
+          feedbackDescription =
+            'Paying the 5 BTC ransom drained company treasury funds, provided a corrupted decryption key, and permanently tagged CYBER CO on dark web broker forums as a compliant target for repeat attacks.';
+          break;
+      }
     }
 
     const newAwareness = Math.min(100, Math.max(0, this.state.stats.awareness + awarenessDelta));
@@ -463,8 +546,10 @@ export class GameStateManager {
       nextObjective = 'Mission 001 Complete! Speak to Marcus Vance or Devon Reed in the IT room.';
     } else if (currentMissionId === 'MISSION-002') {
       nextObjective = 'Mission 002 Complete! Speak to Marcus Vance or Devon Reed about the reported fake website.';
+    } else if (currentMissionId === 'MISSION-003') {
+      nextObjective = 'Mission 003 Complete! Speak to Devon Reed in IT — emergency alarm triggered!';
     } else {
-      nextObjective = 'Mission 003 Complete! Rogue portal neutralized. Return to Marcus Vance.';
+      nextObjective = 'OPERATION CIPHER SHIELD COMPLETE! Speak to Marcus Vance for your Senior Promotion Commendation!';
     }
 
     this.updateState({

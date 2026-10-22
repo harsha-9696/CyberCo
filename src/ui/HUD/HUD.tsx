@@ -52,11 +52,21 @@ export const HUD: React.FC<HUDProps> = ({ onOpenSettings, onOpenCaseFiles }) => 
             style={{
               fontFamily: 'var(--font-pixel)',
               fontSize: '11px',
-              color: '#fff',
-              textShadow: '0 0 10px rgba(248, 184, 57, 0.6)'
+              color: state.completedMissions?.includes('MISSION-004')
+                ? 'var(--sunset-gold)'
+                : state.completedMissions?.includes('MISSION-002')
+                ? 'var(--cyan-bright)'
+                : '#fff',
+              textShadow: state.completedMissions?.includes('MISSION-004')
+                ? '0 0 12px rgba(248, 184, 57, 0.9)'
+                : '0 0 10px rgba(248, 184, 57, 0.6)'
             }}
           >
-            JR. ANALYST
+            {state.completedMissions?.includes('MISSION-004')
+              ? 'SR. COMMANDER'
+              : state.completedMissions?.includes('MISSION-002')
+              ? 'SEC. ANALYST'
+              : 'JR. ANALYST'}
           </span>
         </div>
 

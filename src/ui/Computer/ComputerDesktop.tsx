@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { EmailApp } from '../Email/EmailApp';
 import { IAMConsoleApp } from '../IAMConsole/IAMConsoleApp';
 import { BrowserApp } from '../Browser/BrowserApp';
+import { EDRApp } from '../EDR/EDRApp';
 import { gameState, SecurityDecision } from '../../game/systems/GameState';
 import { audioSystem } from '../../game/systems/AudioSystem';
 import { eventBridge, GameEvents } from '../../game/systems/EventBridge';
@@ -13,6 +14,7 @@ import {
   Globe,
   FolderLock,
   KeyRound,
+  ShieldAlert,
   X,
   Minus,
   Square,
@@ -26,8 +28,14 @@ interface ComputerDesktopProps {
 
 export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDecisionMade }) => {
   const currentMission = gameState.getState().activeMissionId || 'MISSION-001';
-  const [activeWindow, setActiveWindow] = useState<'email' | 'iam' | 'browser' | null>(
-    currentMission === 'MISSION-003' ? 'browser' : currentMission === 'MISSION-002' ? 'iam' : 'email'
+  const [activeWindow, setActiveWindow] = useState<'email' | 'iam' | 'browser' | 'edr' | null>(
+    currentMission === 'MISSION-004'
+      ? 'edr'
+      : currentMission === 'MISSION-003'
+      ? 'browser'
+      : currentMission === 'MISSION-002'
+      ? 'iam'
+      : 'email'
   );
   const [systemAlert, setSystemAlert] = useState<string | null>(null);
 
@@ -39,6 +47,8 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
       setActiveWindow('iam');
     } else if (appName === 'browser') {
       setActiveWindow('browser');
+    } else if (appName === 'edr') {
+      setActiveWindow('edr');
     } else {
       audioSystem.play('warning');
       setSystemAlert(`Access to ${appName.toUpperCase()} is restricted. Clearance Level 2 required.`);
@@ -264,7 +274,62 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
           </span>
         </div>
 
-        {/* 4. App Icon: Files (Warm Terracotta Theme) */}
+        {/* 4. App Icon: NexaEDR (Crimson / Neon Red Theme) */}
+        <div
+          onClick={() => handleLaunchApp('edr')}
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '6px',
+            width: '92px',
+            cursor: 'pointer',
+            padding: '8px',
+            borderRadius: '6px',
+            background: activeWindow === 'edr' ? 'rgba(255, 51, 85, 0.25)' : 'rgba(20, 16, 30, 0.5)',
+            border: activeWindow === 'edr' ? '1px solid var(--neon-red)' : '1px solid rgba(255,255,255,0.08)',
+            boxShadow: activeWindow === 'edr' ? '0 0 16px rgba(255, 51, 85, 0.4)' : 'none'
+          }}
+        >
+          <div style={{ position: 'relative' }}>
+            <div
+              style={{
+                width: '50px',
+                height: '50px',
+                backgroundColor: '#2a0c14',
+                border: '2px solid var(--neon-red)',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 0 14px rgba(255, 51, 85, 0.45)'
+              }}
+            >
+              <ShieldAlert size={26} color="var(--neon-red)" />
+            </div>
+            {currentMission === 'MISSION-004' && (
+              <div
+                style={{
+                  position: 'absolute',
+                  top: -4,
+                  right: -4,
+                  width: '14px',
+                  height: '14px',
+                  backgroundColor: 'var(--neon-red)',
+                  borderRadius: '50%',
+                  border: '2px solid #070c14',
+                  boxShadow: '0 0 8px var(--neon-red)'
+                }}
+                className="animate-blink"
+              />
+            )}
+          </div>
+          <span style={{ fontSize: '11px', color: '#ff99aa', textAlign: 'center', fontWeight: 'bold', textShadow: '0 1px 3px #000' }}>
+            NexaEDR
+          </span>
+        </div>
+
+        {/* 5. App Icon: Files (Warm Terracotta Theme) */}
         <div
           onClick={() => handleLaunchApp('files')}
           style={{
@@ -336,13 +401,15 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
               right: '24px',
               backgroundColor: '#0c121e',
               border: `2px solid ${
-                activeWindow === 'iam'
+                activeWindow === 'edr'
+                  ? 'var(--neon-red)'
+                  : activeWindow === 'iam'
                   ? 'var(--neon-amber)'
                   : activeWindow === 'browser'
                   ? 'var(--cyan-bright)'
                   : 'var(--cyan-dark)'
               }`,
-              boxShadow: '0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 210, 230, 0.2)',
+              boxShadow: activeWindow === 'edr' ? '0 0 35px rgba(255, 51, 85, 0.4), 0 0 15px rgba(0, 0, 0, 0.8)' : '0 0 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 210, 230, 0.2)',
               borderRadius: '6px',
               display: 'flex',
               flexDirection: 'column',
@@ -355,7 +422,9 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
               style={{
                 height: '34px',
                 backgroundColor:
-                  activeWindow === 'iam'
+                  activeWindow === 'edr'
+                    ? '#200b12'
+                    : activeWindow === 'iam'
                     ? '#181f2b'
                     : activeWindow === 'browser'
                     ? '#111e2f'
@@ -372,14 +441,21 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
                   <Mail size={16} color="var(--cyan-bright)" />
                 ) : activeWindow === 'iam' ? (
                   <KeyRound size={16} color="var(--neon-amber)" />
-                ) : (
+                ) : activeWindow === 'browser' ? (
                   <Globe size={16} color="var(--cyan-bright)" />
+                ) : (
+                  <ShieldAlert size={16} color="var(--neon-red)" />
                 )}
                 <span
                   style={{
                     fontFamily: 'var(--font-pixel)',
                     fontSize: '10px',
-                    color: activeWindow === 'iam' ? 'var(--neon-amber)' : '#fff',
+                    color:
+                      activeWindow === 'edr'
+                        ? 'var(--neon-red)'
+                        : activeWindow === 'iam'
+                        ? 'var(--neon-amber)'
+                        : '#fff',
                     letterSpacing: '1px'
                   }}
                 >
@@ -387,7 +463,9 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
                     ? 'NEXA-MAIL // CORPORATE INBOX (OFFICIAL)'
                     : activeWindow === 'iam'
                     ? 'NEXA-IAM // IDENTITY & ACCESS MANAGEMENT SECURITY CONSOLE'
-                    : 'NEXA-BROWSER // ENTERPRISE WEB NAVIGATOR'}
+                    : activeWindow === 'browser'
+                    ? 'NEXA-BROWSER // ENTERPRISE WEB NAVIGATOR'
+                    : 'NEXA-EDR // ENDPOINT DETECTION & INCIDENT RESPONSE (LIVE TELEMETRY)'}
                 </span>
               </div>
 
@@ -434,14 +512,16 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
               </div>
             </div>
 
-            {/* Window Body: EmailApp, IAMConsoleApp, or BrowserApp */}
+            {/* Window Body: EmailApp, IAMConsoleApp, BrowserApp, or EDRApp */}
             <div style={{ flex: 1, minHeight: 0 }}>
               {activeWindow === 'email' ? (
                 <EmailApp onDecisionMade={onDecisionMade} />
               ) : activeWindow === 'iam' ? (
                 <IAMConsoleApp onDecisionMade={onDecisionMade} />
-              ) : (
+              ) : activeWindow === 'browser' ? (
                 <BrowserApp onDecisionMade={onDecisionMade} />
+              ) : (
+                <EDRApp onDecisionMade={onDecisionMade} />
               )}
             </div>
           </div>
@@ -466,7 +546,9 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
           <button
             onClick={() =>
               handleLaunchApp(
-                currentMission === 'MISSION-003'
+                currentMission === 'MISSION-004'
+                  ? 'edr'
+                  : currentMission === 'MISSION-003'
                   ? 'browser'
                   : currentMission === 'MISSION-002'
                   ? 'iam'
@@ -515,10 +597,15 @@ export const ComputerDesktop: React.FC<ComputerDesktopProps> = ({ onClose, onDec
                   <KeyRound size={12} color="var(--neon-amber)" />
                   IAM Console
                 </>
-              ) : (
+              ) : activeWindow === 'browser' ? (
                 <>
                   <Globe size={12} color="var(--cyan-bright)" />
                   Browser
+                </>
+              ) : (
+                <>
+                  <ShieldAlert size={12} color="var(--neon-red)" />
+                  NexaEDR
                 </>
               )}
             </div>

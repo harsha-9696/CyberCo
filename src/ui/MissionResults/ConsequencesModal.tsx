@@ -22,8 +22,16 @@ export const ConsequencesModal: React.FC<ConsequencesModalProps> = ({
   result,
   onContinue
 }) => {
-  const goodDecisions = ['REPORT', 'ENFORCE_MFA_LOCKOUT', 'SINKHOLE_AND_ADVISE'];
-  const badDecisions = ['OPEN_LINK', 'REPLY', 'IGNORE_INCIDENT', 'TRUST_HTTPS_PADLOCK'];
+  const goodDecisions = ['REPORT', 'ENFORCE_MFA_LOCKOUT', 'SINKHOLE_AND_ADVISE', 'ISOLATE_HOST_AND_RESTORE'];
+  const badDecisions = [
+    'OPEN_LINK',
+    'REPLY',
+    'IGNORE_INCIDENT',
+    'TRUST_HTTPS_PADLOCK',
+    'REBOOT_SERVER',
+    'PAY_RANSOM_DEMAND',
+    'TERMINATE_POWERSHELL_ONLY'
+  ];
   const isPositive = goodDecisions.includes(decision);
   const isDanger = badDecisions.includes(decision);
   const isNeutral = !isPositive && !isDanger;
